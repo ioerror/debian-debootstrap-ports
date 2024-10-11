@@ -17,12 +17,11 @@ jobs:
         QEMU_VER: [v7.2.0-1]
         DOCKER_REPO: [docker.io/polyarch/debian-debootstrap-ports]
         VERSION: [sid, experimental, unreleased]
-        UNAME_ARCH: [alpha, hppa, m68k, powerpc, ppc64, sh4, sparc64]
+        UNAME_ARCH: [alpha, hppa, m68k, ppc64, sh4, sparc64]
         include:
           - {ARCH: alpha,       QEMU_ARCH: alpha,       UNAME_ARCH: alpha}
           - {ARCH: hppa,        QEMU_ARCH: hppa,        UNAME_ARCH: hppa}
           - {ARCH: m68k,        QEMU_ARCH: m68k,        UNAME_ARCH: m68k}
-          - {ARCH: powerpc,     QEMU_ARCH: ppc,         UNAME_ARCH: powerpc}
           - {ARCH: ppc64,       QEMU_ARCH: ppc64,       UNAME_ARCH: ppc64}
           - {ARCH: sh4,         QEMU_ARCH: sh4,         UNAME_ARCH: sh4}
           - {ARCH: sparc64,     QEMU_ARCH: sparc64,     UNAME_ARCH: sparc64}
