@@ -1,7 +1,7 @@
 # debian-debootstrap-ports
 
 [![actions](https://github.com/ioerror/debian-debootstrap-ports/actions/workflows/actions.yml/badge.svg?branch=main)](https://github.com/ioerror/debian-debootstrap-ports/actions/workflows/actions.yml)
- [![Docker Pulls](https://img.shields.io/docker/pulls/ioerror/debian-debootstrap-ports)](https://hub.docker.com/r/ioerror/debian-debootstrap-ports)
+ [![Docker Pulls](https://img.shields.io/docker/pulls/polyarch/debian-debootstrap-ports)](https://hub.docker.com/r/polyarch/debian-debootstrap-ports)
 [![CI](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/ioerror/debian-debootstrap-ports/blob/main/LICENSE)
  
  `debian-debootstrap-ports` Docker image for multiple architectures (ports)
