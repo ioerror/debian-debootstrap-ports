@@ -12,6 +12,7 @@ jobs:
   debian-debootstrap-ports:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         QEMU_VER: [v7.2.0-1]
         DOCKER_REPO: [docker.io/polyarch/debian-debootstrap-ports]
