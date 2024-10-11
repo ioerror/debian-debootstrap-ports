@@ -29,7 +29,8 @@ EXTRA_PACKAGES="autoconf bash build-essential curl debian-ports-archive-keyring 
 
 dir="$VERSION-$ARCH"
 VARIANT="buildd"
-args=( -d "$dir" debootstrap --no-check-gpg --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$VERSION" https://deb.debian.org/debian-ports)
+VERSION_ALT="sid"
+args=( -d "$dir" debootstrap --no-check-gpg --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$VERSION_ALT" https://deb.debian.org/debian-ports)
 
 mkdir -p mkimage $dir
 curl https://raw.githubusercontent.com/moby/moby/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage.sh > mkimage.sh
