@@ -14,9 +14,9 @@ jobs:
     strategy:
       matrix:
         QEMU_VER: [v7.2.0-1]
-        DOCKER_REPO: [docker.io/urbanogilson/debian-debootstrap-ports]
+        DOCKER_REPO: [docker.io/polyarch/debian-debootstrap-ports]
         VERSION: [sid]
-        UNAME_ARCH: [alpha, hppa, m68k, powerpc, ppc64, sh4]
+        UNAME_ARCH: [alpha, hppa, m68k, powerpc, ppc64, sh4, sparc64]
         include:
           - {ARCH: alpha,       QEMU_ARCH: alpha,       UNAME_ARCH: alpha}
           - {ARCH: hppa,        QEMU_ARCH: hppa,        UNAME_ARCH: hppa}
@@ -24,6 +24,7 @@ jobs:
           - {ARCH: powerpc,     QEMU_ARCH: ppc,         UNAME_ARCH: powerpc}
           - {ARCH: ppc64,       QEMU_ARCH: ppc64,       UNAME_ARCH: ppc64}
           - {ARCH: sh4,         QEMU_ARCH: sh4,         UNAME_ARCH: sh4}
+          - {ARCH: sparc64,     QEMU_ARCH: sparc64,     UNAME_ARCH: sparc64}
     steps:
       - uses: actions/checkout@v4
       - name: Build
