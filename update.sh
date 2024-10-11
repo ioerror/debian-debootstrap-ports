@@ -25,12 +25,12 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
-EXTRA_PACKAGES="apt-transport-https autoconf bash build-essential ca-certificates curl debian-ports-archive-keyring git libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo wget" 
+EXTRA_PACKAGES="apt-transport-https autoconf bash build-essential ca-certificates curl debian-ports-archive-keyring git libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo vim wget" 
 
 dir="$VERSION-$ARCH"
 VARIANT="buildd"
 VERSION_ALT="sid"
-args=( -d "$dir" debootstrap --no-check-gpg --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$VERSION_ALT" https://deb.debian.org/debian-ports)
+args=( -d "$dir" debootstrap --no-check-gpg --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$VERSION_ALT" http://deb.debian.org/debian-ports)
 
 mkdir -p mkimage $dir
 curl https://raw.githubusercontent.com/moby/moby/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage.sh > mkimage.sh
