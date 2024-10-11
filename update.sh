@@ -25,7 +25,7 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
-EXTRA_PACKAGES="autoconf bash build-essential curl debian-ports-archive-keyring git libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo wget" 
+EXTRA_PACKAGES="apt-transport-https autoconf bash build-essential ca-certificates curl debian-ports-archive-keyring git libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo wget" 
 
 dir="$VERSION-$ARCH"
 VARIANT="buildd"
