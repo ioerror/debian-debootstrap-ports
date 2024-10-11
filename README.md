@@ -1,45 +1,63 @@
-# debian-debootstrap-ports
+# debian-ports
 
-[![actions](https://github.com/urbanogilson/debian-debootstrap-ports/actions/workflows/actions.yml/badge.svg?branch=main)](https://github.com/urbanogilson/debian-debootstrap-ports/actions/workflows/actions.yml)
- [![Docker Pulls](https://img.shields.io/docker/pulls/urbanogilson/debian-debootstrap-ports)](https://hub.docker.com/r/urbanogilson/debian-debootstrap-ports)
-[![CI](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/urbanogilson/debian-debootstrap-ports/blob/main/LICENSE)
+[![actions](https://github.com/ioerror/debian-debootstrap-ports/actions/workflows/actions.yml/badge.svg?branch=main)](https://github.com/ioerror/debian-debootstrap-ports/actions/workflows/actions.yml)
+ [![Docker Pulls](https://img.shields.io/docker/pulls/polyarch/debian-debootstrap-ports)](https://hub.docker.com/r/polyarch/debian-debootstrap-ports)
+[![CI](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/ioerror/debian-debootstrap-ports/blob/main/LICENSE)
  
- `debian-debootstrap-ports` Docker image for multiple architectures (ports)
+`polyarch/debian-ports` Docker images of Debian GNU/Linux `sid`
 
 ## Usage
 
-Before using this Docker image, you need to configure binfmt-support on your Docker host. This works both locally and remotely (e.g., using boot2docker or swarm).
-
+If your Operating System provides a modern `qemu-user-static` package and the
+`binfmt-support` package then it should be sufficient to use those packages.
+For example configure the docker host on Ubuntu Noble (24.10) by installing the
+following packages:
 ```console
-$ docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+$ apt install qemu-user-static binfmt-support
 ```
 
-Once configured, you can run a `powerpc` image from your `x86_64` Docker host.
+Alternatively, before using any of these Docker images, you need to configure binfmt
+support on your Docker host. This works both locally and remotely (e.g., using
+`boot2docker` or `swarm`).
 
 ```console
-$ $ docker run -it --rm urbanogilson/debian-debootstrap-ports:powerpc-trixie-sid
-root@12c7a97fd7d8:/# uname -a
-Linux 12c7a97fd7d8 5.15.133.1-microsoft-standard-WSL2 #1 SMP Thu Oct 5 21:02:42 UTC 2023 ppc GNU/Linux
-root@12c7a97fd7d8:/#
+$ docker run --rm --privileged polyarch/qemu-user-static --reset -p yes
+```
+
+Once configured, you can run an image from your Docker host by selected a CPU
+architecture and setting it as part of the platform string:
+```console
+$ docker run --platform linux/loong64 -it --rm polyarch/debian-ports uname -m
+loongarch64
 ```
 
 ## Supported ports
 
-Port            | Architecture          | Description
-| ------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-alpha           | Alpha	                | Port to the 64-bit RISC Alpha architecture.                                                                                                                                        |
-hppa            | HP PA-RISC            | Port to Hewlett-Packard's PA-RISC architecture.                                                                                                                                    |
-m68k            | Motorola 68k          | Port to the Motorola 68k series of processors — in particular, the Sun3 range of workstations, the Apple Macintosh personal computers, and the Atari and Amiga personal computers. |
-powerpc/ppc64   | Motorola/IBM PowerPC  | Port for many of the Apple Macintosh PowerMac models, and CHRP and PReP open architecture machines.                                                                                |
-sh4             | SuperH                | Port to Hitachi SuperH processors. Also supports the open source J-Core processor.                                                                                                 |
+```
+ARCH_LIST="alpha amd64 arm32v5 arm32v7 arm64v8 hppa i386 \
+            loong64 m68k mips64le ppc ppc64 ppc64le riscv64 \
+            s390x sh4 sparc64"
+for ARCH in $ARCH_LIST;
+do
+docker run --platform linux/${ARCH} --rm -t \
+            polyarch/debian-ports:latest uname -a
+done
+```
 
 ## Source of Images
 
-The images provided in this repository are sourced from [Debian other ports](https://www.debian.org/ports/#portlist-other).
+All images are generated from the respective architecture specific Debian
+GNU/Linux Operating System package repositories. Docker images are generated
+with the included `update.sh` script and the GitHub Action that runs it.
+
+## Notes
+
+Only `x86_64` has been tested as a host architecture.
 
 ## Original Project
 
 This project is based on [multiarch/debian-debootstrap](https://github.com/multiarch/debian-debootstrap), which supports a wide range of other architectures.
+This project was forked from [urbanogilson/debian-debootstrap-ports](https://github.com/urbanogilson/debian-debootstrap-ports).
 
 ## License
 
