@@ -8,11 +8,12 @@ on:
     - cron: '0 0 15 * *'
   workflow_dispatch:
 
+env:
+  DEBIAN_FRONTEND: 'noninteractive'
+
 jobs:
   debian-debootstrap-ports:
     runs-on: ubuntu-latest
-    variables:
-      DEBIAN_FRONTEND: 'noninteractive'
     strategy:
       fail-fast: false
       matrix:
