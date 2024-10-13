@@ -11,6 +11,8 @@ on:
 jobs:
   debian-debootstrap-ports:
     runs-on: ubuntu-latest
+    variables:
+      DEBIAN_FRONTEND: 'noninteractive'
     strategy:
       fail-fast: false
       matrix:
