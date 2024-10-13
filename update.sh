@@ -57,14 +57,14 @@ if [ "$DOCKER_REPO" ]; then
     mkdir -p "${dir}/full"
     (
     cd "${dir}/full"
-    if [ ! -f x86_64_qemu-${QEMU_ARCH}-static.tar.gz ]; then
-        wget -N https://github.com/ioerror/qemu-user-static/releases/download/${QEMU_VER}/x86_64_qemu-${QEMU_ARCH}-static.tar.gz
+    if [ ! -f x86_64_qemu-${QEMU_ARCH}.tar.gz ]; then
+        wget -N https://github.com/ioerror/qemu-user-static/releases/download/${QEMU_VER}/x86_64_qemu-${QEMU_ARCH}.tar.gz
     fi
     tar xf x86_64_qemu-*.gz
     )
     cat > "${dir}/full/Dockerfile" <<EOF
 FROM ${DOCKER_REPO}:${ARCH}-${VERSION}-slim
-ADD qemu-*-static /usr/bin/
+ADD qemu-* /usr/bin/
 EOF
     docker build -t "${DOCKER_REPO}:${ARCH}-${VERSION}" "${dir}/full"
 fi
