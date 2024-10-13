@@ -11,7 +11,7 @@
 Before using this Docker image, you need to configure binfmt-support on your Docker host. This works both locally and remotely (e.g., using boot2docker or swarm).
 
 ```console
-$ docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+$ docker run --rm --privileged polyarch/qemu-user-static --reset -p yes
 ```
 
 Once configured, you can run a `powerpc` image from your `x86_64` Docker host.
@@ -32,6 +32,8 @@ hppa            | HP PA-RISC            | Port to Hewlett-Packard's PA-RISC arch
 m68k            | Motorola 68k          | Port to the Motorola 68k series of processors — in particular, the Sun3 range of workstations, the Apple Macintosh personal computers, and the Atari and Amiga personal computers. |
 powerpc/ppc64   | Motorola/IBM PowerPC  | Port for many of the Apple Macintosh PowerMac models, and CHRP and PReP open architecture machines.                                                                                |
 sh4             | SuperH                | Port to Hitachi SuperH processors. Also supports the open source J-Core processor.                                                                                                 |
+
+In addition this project produces builds for `loong64`, `ppc64`, and `sparc64`.
 
 ## Source of Images
 

@@ -58,7 +58,7 @@ if [ "$DOCKER_REPO" ]; then
     (
     cd "${dir}/full"
     if [ ! -f x86_64_qemu-${QEMU_ARCH}-static.tar.gz ]; then
-        wget -N https://github.com/multiarch/qemu-user-static/releases/download/${QEMU_VER}/x86_64_qemu-${QEMU_ARCH}-static.tar.gz
+        wget -N https://github.com/ioerror/qemu-user-static/releases/download/${QEMU_VER}/x86_64_qemu-${QEMU_ARCH}-static.tar.gz
     fi
     tar xf x86_64_qemu-*.gz
     )
