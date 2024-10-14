@@ -57,6 +57,9 @@ if [ $? -eq 0 ]; then
   cat "$dir/build.log"
 else
   sudo DEBOOTSTRAP="debootstrap" nice ionice -c 2 "$mkimage" "${fallback_args[@]}" 2>&1 | tee "$dir/build.log"
+  if [ $? -eq 1 ]; then
+    exit 1
+  fi
 fi
 cat "$dir/build.log"
 
