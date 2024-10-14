@@ -38,7 +38,6 @@ dir="$VERSION-$ARCH"
 VARIANT="minbase"
 VERSION_ALT="sid"
 args=( -d "$dir" debootstrap --verbose --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$VERSION_ALT" https://deb.debian.org/debian-ports)
-fallback_args=( -d "$dir" debootstrap --verbose --second-stage )
 
 mkdir -p mkimage $dir
 curl https://raw.githubusercontent.com/moby/moby/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage.sh > mkimage.sh
@@ -56,7 +55,7 @@ sudo DEBOOTSTRAP="debootstrap" nice ionice -c 2 "$mkimage" "${args[@]}" 2>&1 | t
 if [ $? -eq 0 ]; then
   cat "$dir/build.log"
 else
-  sudo DEBOOTSTRAP="debootstrap" nice ionice -c 2 "$mkimage" "${fallback_args[@]}" 2>&1 | tee "$dir/build.log"
+  sudo debootstrap --verbose --second-stage-target=$dir --second-stage 2>&1 | tee "$dir/build.log"
   if [ $? -eq 1 ]; then
     exit 1
   fi
