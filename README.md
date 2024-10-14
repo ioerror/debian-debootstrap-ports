@@ -14,13 +14,11 @@ Before using this Docker image, you need to configure binfmt-support on your Doc
 $ docker run --rm --privileged polyarch/qemu-user-static --reset -p yes
 ```
 
-Once configured, you can run a `powerpc` image from your `x86_64` Docker host.
+Once configured, you can run a `loong64` image from your `x86_64` Docker host.
 
 ```console
-$ $ docker run -it --rm ioerror/debian-debootstrap-ports:powerpc-trixie-sid
-root@12c7a97fd7d8:/# uname -a
-Linux 12c7a97fd7d8 5.15.133.1-microsoft-standard-WSL2 #1 SMP Thu Oct 5 21:02:42 UTC 2023 ppc GNU/Linux
-root@12c7a97fd7d8:/#
+$ docker run -it --rm polyarch/debian-debootstrap-ports:loong64-trixie-sid-qemu-v9.0.2-2 uname -m
+loongarch64
 ```
 
 ## Supported ports
