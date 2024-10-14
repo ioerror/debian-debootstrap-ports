@@ -28,7 +28,7 @@ shift $((OPTIND-1))
 EXTRA_PACKAGES="adduser apt-transport-https autoconf bash build-essential ca-certificates curl debian-ports-archive-keyring git libcap2-bin libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo joe wget"
 
 dir="$VERSION-$ARCH"
-VARIANT="slim"
+VARIANT="minbase"
 VERSION_ALT="sid"
 args=( -d "$dir" debootstrap --no-check-gpg --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$VERSION_ALT" https://deb.debian.org/debian-ports)
 
