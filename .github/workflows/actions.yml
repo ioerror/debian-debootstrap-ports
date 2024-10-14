@@ -20,7 +20,7 @@ jobs:
         QEMU_VER: [v9.0.2-2]
         DOCKER_REPO: [polyarch/debian-debootstrap-ports]
         VERSION: [sid]
-        UNAME_ARCH: [alpha, hppa, loong64, m68k, ppc, ppc64, sh4, sparc64, x32]
+        UNAME_ARCH: [alpha, hppa, loong64, m68k, ppc, ppc64, sh4, sparc64]
         include:
           - {ARCH: alpha,       QEMU_ARCH: alpha,       UNAME_ARCH: alpha}
           - {ARCH: hppa,        QEMU_ARCH: hppa,        UNAME_ARCH: hppa}
@@ -30,7 +30,6 @@ jobs:
           - {ARCH: ppc64,       QEMU_ARCH: ppc64,       UNAME_ARCH: ppc64}
           - {ARCH: sh4,         QEMU_ARCH: sh4,         UNAME_ARCH: sh4}
           - {ARCH: sparc64,     QEMU_ARCH: sparc64,     UNAME_ARCH: sparc64}
-          - {ARCH: x32,         QEMU_ARCH: x32,         UNAME_ARCH: x32}
     steps:
       - uses: actions/checkout@v4
       - name: Build
