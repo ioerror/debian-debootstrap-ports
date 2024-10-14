@@ -14,13 +14,11 @@ Before using this Docker image, you need to configure binfmt-support on your Doc
 $ docker run --rm --privileged polyarch/qemu-user-static --reset -p yes
 ```
 
-Once configured, you can run a `powerpc` image from your `x86_64` Docker host.
+Once configured, you can run a `loong64` image from your `x86_64` Docker host.
 
 ```console
-$ $ docker run -it --rm ioerror/debian-debootstrap-ports:powerpc-trixie-sid
-root@12c7a97fd7d8:/# uname -a
-Linux 12c7a97fd7d8 5.15.133.1-microsoft-standard-WSL2 #1 SMP Thu Oct 5 21:02:42 UTC 2023 ppc GNU/Linux
-root@12c7a97fd7d8:/#
+$ docker run -it --rm polyarch/debian-debootstrap-ports:loong64-trixie-sid-qemu-v9.0.2-2 uname -m
+loongarch64
 ```
 
 ## Supported ports
@@ -33,8 +31,8 @@ m68k            | Motorola 68k          | Port to the Motorola 68k series of pro
 powerpc/ppc64   | Motorola/IBM PowerPC  | Port for many of the Apple Macintosh PowerMac models, and CHRP and PReP open architecture machines.                                                                                |
 sh4             | SuperH                | Port to Hitachi SuperH processors. Also supports the open source J-Core processor.                                                                                                 |
 
-In addition this project produces builds for `loong64`, and `sparc64`.
-The `ppc64` architecture is currently non-functional due to a debootstrap issue.
+In addition this project produces builds for `loong64`, `powerpc`, `ppc64`, and `sparc64`.
+The `alpha` architecture is currently non-functional due to a debootstrap issue.
 
 ## Source of Images
 

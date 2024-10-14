@@ -17,14 +17,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        QEMU_VER: [v7.2.0-4]
+        QEMU_VER: [v9.0.2-2]
         DOCKER_REPO: [polyarch/debian-debootstrap-ports]
         VERSION: [sid]
-        UNAME_ARCH: [alpha, hppa, m68k, sh4, sparc64]
+        UNAME_ARCH: [hppa, loong64, m68k, ppc, ppc64, sh4, sparc64]
         include:
-          - {ARCH: alpha,       QEMU_ARCH: alpha,       UNAME_ARCH: alpha}
           - {ARCH: hppa,        QEMU_ARCH: hppa,        UNAME_ARCH: hppa}
+          - {ARCH: loong64,     QEMU_ARCH: loongarch64, UNAME_ARCH: loong64}
           - {ARCH: m68k,        QEMU_ARCH: m68k,        UNAME_ARCH: m68k}
+          - {ARCH: powerpc,     QEMU_ARCH: ppc,         UNAME_ARCH: ppc}
+          - {ARCH: ppc64,       QEMU_ARCH: ppc64,       UNAME_ARCH: ppc64}
           - {ARCH: sh4,         QEMU_ARCH: sh4,         UNAME_ARCH: sh4}
           - {ARCH: sparc64,     QEMU_ARCH: sparc64,     UNAME_ARCH: sparc64}
     steps:
@@ -34,10 +36,12 @@ jobs:
           sudo apt update && sudo apt install -y qemu-user-static debootstrap
           ./update.sh -a ${{ matrix.ARCH }} -v ${{ matrix.VERSION }} -q ${{ matrix.QEMU_ARCH }} -u ${{ matrix.QEMU_VER }} -d ${{ matrix.DOCKER_REPO }} -o ${{ matrix.UNAME_ARCH }}
       - name: Login to Docker Hub
+        if: github.ref == 'refs/heads/master'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Publish Docker images
+        if: github.ref == 'refs/heads/master'
         run: |
           docker push -a ${{ matrix.DOCKER_REPO }}
