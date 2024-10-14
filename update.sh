@@ -27,9 +27,9 @@ shift $((OPTIND-1))
 
 # Work around broken packages in sid
 if [ $ARCH = alpha ]; then
-  DEV_PACKAGES="libc-dev gcc make dpkg-dev"
+  DEV_PACKAGES="gcc make dpkg-dev"
 else
-  DEV_PACKAGES="libc-dev gcc g++ make dpkg-dev"
+  DEV_PACKAGES="gcc g++ make dpkg-dev"
 fi
 
 EXTRA_PACKAGES="adduser apt-transport-https autoconf bash $DEV_PACKAGES ca-certificates curl debian-ports-archive-keyring git libcap2-bin libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo joe wget"
