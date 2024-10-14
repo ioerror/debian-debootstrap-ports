@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -eo pipefail
 
 # A POSIX variable
@@ -46,9 +45,6 @@ mkimage="$(readlink -f "${MKIMAGE:-"mkimage.sh"}")"
 } > "$dir/build-command.txt"
 
 sudo DEBOOTSTRAP="debootstrap" nice ionice -c 2 "$mkimage" "${args[@]}" 2>&1 | tee "$dir/build.log"
-echo "debootstrap result: $?"
-echo "Attempting --second-stage debootstrap"
-sudo debootstrap --verbose --second-stage-target=$dir --second-stage 2>&1 | tee "$dir/build.log"
 cat "$dir/build.log"
 
 sudo chown -R "$(id -u):$(id -g)" "$dir"
