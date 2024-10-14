@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        QEMU_VER: [v7.2.0-5]
-        DOCKER_REPO: [docker.io/polyarch/debian-debootstrap-ports]
+        QEMU_VER: [v7.2.0-4]
+        DOCKER_REPO: [polyarch/debian-debootstrap-ports]
         VERSION: [sid]
         UNAME_ARCH: [alpha, hppa, m68k, sh4, sparc64]
         include:
