@@ -52,9 +52,11 @@ mkimage="$(readlink -f "${MKIMAGE:-"mkimage.sh"}")"
 } > "$dir/build-command.txt"
 
 sudo DEBOOTSTRAP="debootstrap" nice ionice -c 2 "$mkimage" "${args[@]}" 2>&1 | tee "$dir/build.log"
+echo "debootstrap result: $?"
 if [ $? -eq 0 ]; then
   cat "$dir/build.log"
 else
+  echo "Attempting --second-stage debootstrap"
   sudo debootstrap --verbose --second-stage-target=$dir --second-stage 2>&1 | tee "$dir/build.log"
   if [ $? -eq 1 ]; then
     exit 1
