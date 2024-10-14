@@ -4,9 +4,11 @@ set -eo pipefail
 # A POSIX variable
 OPTIND=1 # Reset in case getopts has been used previously in the shell.
 
-while getopts "a:v:q:u:d:s:i:o:" opt; do
+while getopts "a:b:v:q:u:d:s:i:o:" opt; do
     case "$opt" in
     a)  ARCH=$OPTARG
+        ;;
+    b)  BOOTSTRAP_VERSION=$OPTARG
         ;;
     v)  VERSION=$OPTARG
         ;;
@@ -73,7 +75,7 @@ fi
 CONTAINER=`docker run --rm ${DOCKER_REPO}:${ARCH}-${VERSION} /bin/bash -c "uname -a; cat /etc/debian_version"`
 echo "${CONTAINER}"
 NEW_VERSION=`echo "${CONTAINER}" | tail -1 | tr "/" "-"`
-NEW_VERSION="${NEW_VERSION}-qemu-${QEMU_VER}"
+NEW_VERSION="${NEW_VERSION}-qemu-${QEMU_VER}-${BOOTSTRAP_VERSION}"
 
 docker image tag "${DOCKER_REPO}:${ARCH}-${VERSION}" "${DOCKER_REPO}:${ARCH}-${NEW_VERSION}"
 docker rmi "${DOCKER_REPO}:${ARCH}-${VERSION}"
