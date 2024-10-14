@@ -38,7 +38,7 @@ EXTRA_PACKAGES="adduser apt-transport-https autoconf bash build-essential ca-cer
 dir="$VERSION-$ARCH"
 VARIANT="minbase"
 VERSION_ALT="sid"
-args=( -d "$dir" debootstrap --verbose --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$VERSION_ALT" https://deb.debian.org/debian-ports)
+args=( -d "$dir" debootstrap --debian-installer --verbose --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$VERSION_ALT" https://deb.debian.org/debian-ports)
 
 mkdir -p mkimage $dir
 curl https://raw.githubusercontent.com/moby/moby/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage.sh > mkimage.sh
