@@ -73,6 +73,7 @@ fi
 CONTAINER=`docker run --rm ${DOCKER_REPO}:${ARCH}-${VERSION} /bin/bash -c "uname -a; cat /etc/debian_version"`
 echo "${CONTAINER}"
 NEW_VERSION=`echo "${CONTAINER}" | tail -1 | tr "/" "-"`
+NEW_VERSION="${NEW_VERSION}-qemu-${QEMU_VER}"
 
 docker image tag "${DOCKER_REPO}:${ARCH}-${VERSION}" "${DOCKER_REPO}:${ARCH}-${NEW_VERSION}"
 docker rmi "${DOCKER_REPO}:${ARCH}-${VERSION}"
