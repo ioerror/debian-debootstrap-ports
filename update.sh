@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -eo pipefail
 
 # A POSIX variable
 OPTIND=1 # Reset in case getopts has been used previously in the shell.
@@ -46,18 +47,9 @@ mkimage="$(readlink -f "${MKIMAGE:-"mkimage.sh"}")"
 
 sudo DEBOOTSTRAP="debootstrap" nice ionice -c 2 "$mkimage" "${args[@]}" 2>&1 | tee "$dir/build.log"
 echo "debootstrap result: $?"
-if [ $? -eq 0 ]; then
-  cat "$dir/build.log"
-else
-  echo "Attempting --second-stage debootstrap"
-  sudo debootstrap --verbose --second-stage-target=$dir --second-stage 2>&1 | tee "$dir/build.log"
-  if [ $? -eq 1 ]; then
-    exit 1
-  fi
-fi
+echo "Attempting --second-stage debootstrap"
+sudo debootstrap --verbose --second-stage-target=$dir --second-stage 2>&1 | tee "$dir/build.log"
 cat "$dir/build.log"
-
-set -eo pipefail
 
 sudo chown -R "$(id -u):$(id -g)" "$dir"
 
