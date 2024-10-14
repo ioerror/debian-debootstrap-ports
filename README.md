@@ -33,7 +33,8 @@ m68k            | Motorola 68k          | Port to the Motorola 68k series of pro
 powerpc/ppc64   | Motorola/IBM PowerPC  | Port for many of the Apple Macintosh PowerMac models, and CHRP and PReP open architecture machines.                                                                                |
 sh4             | SuperH                | Port to Hitachi SuperH processors. Also supports the open source J-Core processor.                                                                                                 |
 
-In addition this project produces builds for `loong64`, `ppc64`, and `sparc64`.
+In addition this project produces builds for `loong64`, and `sparc64`.
+The `ppc64` architecture is currently non-functional due to a debootstrap issue.
 
 ## Source of Images
 
