@@ -20,12 +20,13 @@ jobs:
         QEMU_VER: [v9.0.2-2]
         DOCKER_REPO: [polyarch/debian-debootstrap-ports]
         VERSION: [sid]
-        UNAME_ARCH: [alpha, hppa, loong64, m68k, ppc64, sh4, sparc64]
+        UNAME_ARCH: [alpha, hppa, loong64, m68k, ppc, ppc64, sh4, sparc64]
         include:
           - {ARCH: alpha,       QEMU_ARCH: alpha,       UNAME_ARCH: alpha}
           - {ARCH: hppa,        QEMU_ARCH: hppa,        UNAME_ARCH: hppa}
           - {ARCH: loong64,     QEMU_ARCH: loongarch64, UNAME_ARCH: loong64}
           - {ARCH: m68k,        QEMU_ARCH: m68k,        UNAME_ARCH: m68k}
+          - {ARCH: ppc,         QEMU_ARCH: ppc,         UNAME_ARCH: ppc}
           - {ARCH: ppc64,       QEMU_ARCH: ppc64,       UNAME_ARCH: ppc64}
           - {ARCH: sh4,         QEMU_ARCH: sh4,         UNAME_ARCH: sh4}
           - {ARCH: sparc64,     QEMU_ARCH: sparc64,     UNAME_ARCH: sparc64}
