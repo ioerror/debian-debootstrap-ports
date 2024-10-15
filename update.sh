@@ -72,6 +72,6 @@ FROM ${DOCKER_REPO}:slim
 ADD qemu-* /usr/bin/
 EOF
   docker buildx build --provenance false --platform $OS/${ARCH} -t "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${ARCH}" "${dir}/full"
-  docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${ARCH}" "${DOCKER_REPO}:latest-${ARCH}"
+  docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${ARCH}" "${DOCKER_REPO}:latest-${OS}-${ARCH}"
   docker rmi "${DOCKER_REPO}:slim"
 fi

@@ -62,7 +62,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Combine into One Big Union
+      - name: Combine into One Big Union: ${BOOTSTRAP_VERSION}
         run: |
            docker manifest create ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION} \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-hppa \
@@ -72,10 +72,27 @@ jobs:
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sh4 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sparc64
-      - name: Inspect the combination
+      - name: Inspect the combination: ${BOOTSTRAP_VERSION}
         run: |
             docker manifest inspect -v ${DOCKER_REPO}:${BOOTSTRAP_VERSION}
+      - name: Combine into One Big Union: latest
+        run: |
+           docker manifest create ${DOCKER_REG}${DOCKER_REPO}:latest \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-hppa \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-loong64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-m68k \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-powerpc \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-ppc64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-sh4 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-sparc64
+      - name: Inspect the combination: latest
+        run: |
+            docker manifest inspect -v ${DOCKER_REPO}:latest
       - name: Publish Docker polyarch manifest
         if: github.ref == 'refs/heads/main'
         run: |
           docker manifest push ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}
+      - name: Publish Docker polyarch manifest
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker manifest push ${DOCKER_REG}${DOCKER_REPO}:latest
