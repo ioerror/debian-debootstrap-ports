@@ -18,7 +18,7 @@ env:
   VERSION: 'sid'
 
 jobs:
-  debian-port-build:
+  docker-build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -49,8 +49,8 @@ jobs:
         run: |
           docker push -a ${DOCKER_REPO}
 
-  debian-ports-docker-arch-combine:
-    needs: debian-ports-docker-arch-build
+  docker-combine:
+    needs: docker-build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
