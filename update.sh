@@ -23,6 +23,8 @@ while getopts "a:b:v:q:u:d:s:i:o:" opt; do
     esac
 done
 
+OS=linux
+
 shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
@@ -56,25 +58,21 @@ sed -i /^ENV/d "${dir}/Dockerfile"
 echo "ENV ARCH=${UNAME_ARCH} UBUNTU_SUITE=${VERSION} DOCKER_REPO=${DOCKER_REPO}" >> "${dir}/Dockerfile"
 
 if [ "$DOCKER_REPO" ]; then
-    docker buildx build --platform linux/${ARCH} -t "${DOCKER_REPO}:slim" "${dir}"
-    mkdir -p "${dir}/full"
-    (
-    cd "${dir}/full"
-    if [ ! -f x86_64_qemu-${QEMU_ARCH}-static.tar.gz ]; then
-        wget -N https://github.com/ioerror/qemu-user-static/releases/download/${QEMU_VER}/x86_64_qemu-${QEMU_ARCH}-static.tar.gz
-    fi
-    tar -vxf x86_64_qemu-${QEMU_ARCH}-static.tar.gz 
-    )
-    cat > "${dir}/full/Dockerfile" <<EOF
+  docker buildx build --provenance false --platform $OS/${ARCH} -t "${DOCKER_REPO}:slim" "${dir}"
+  mkdir -p "${dir}/full"
+  (
+  cd "${dir}/full"
+  if [ ! -f x86_64_qemu-${QEMU_ARCH}-static.tar.gz ]; then
+      wget -N https://github.com/ioerror/qemu-user-static/releases/download/${QEMU_VER}/x86_64_qemu-${QEMU_ARCH}-static.tar.gz
+  fi
+  tar -vxf x86_64_qemu-${QEMU_ARCH}-static.tar.gz 
+  )
+  cat > "${dir}/full/Dockerfile" <<EOF
 FROM ${DOCKER_REPO}:slim
 ADD qemu-* /usr/bin/
 EOF
-    docker buildx build --platform linux/${ARCH} -t "${DOCKER_REPO}:latest" "${dir}/full"
+  docker buildx build --provenance false --platform $OS/${ARCH} -t "${DOCKER_REPO}:latest-${ARCH}" "${dir}/full"
+  docker image tag "${DOCKER_REPO}:latest-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${ARCH}"
+  docker image tag "${DOCKER_REPO}:latest-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-qemu-${QEMU_VER}-${ARCH}"
+  docker rmi "${DOCKER_REPO}:slim"
 fi
-
-docker image tag "${DOCKER_REPO}:latest" "${DOCKER_REPO}:latest-${ARCH}"
-docker image tag "${DOCKER_REPO}:latest-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${ARCH}"
-docker image tag "${DOCKER_REPO}:latest-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-qemu-${QEMU_ARCH}-${ARCH}"
-docker image tag "${DOCKER_REPO}:slim" "${DOCKER_REPO}:slim-${ARCH}"
-docker image tag "${DOCKER_REPO}:slim-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${ARCH}-slim"
-docker rmi "${DOCKER_REPO}:slim"
