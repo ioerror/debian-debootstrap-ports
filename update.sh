@@ -74,6 +74,7 @@ fi
 
 docker image tag "${DOCKER_REPO}:latest" "${DOCKER_REPO}:latest-${ARCH}"
 docker image tag "${DOCKER_REPO}:latest-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${ARCH}"
+docker image tag "${DOCKER_REPO}:latest-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-qemu-${QEMU_ARCH}-${ARCH}"
 docker image tag "${DOCKER_REPO}:slim" "${DOCKER_REPO}:slim-${ARCH}"
 docker image tag "${DOCKER_REPO}:slim-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${ARCH}-slim"
 docker rmi "${DOCKER_REPO}:slim"
