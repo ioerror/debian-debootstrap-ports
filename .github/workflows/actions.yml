@@ -10,10 +10,10 @@ on:
 
 env:
   DEBIAN_FRONTEND: 'noninteractive'
-  BOOTSTRAP_VERSION: [v000]
-  DOCKER_REPO: [polyarch/debian-ports]
-  QEMU_VER: [v9.0.2-2]
-  OS: [linux]
+  BOOTSTRAP_VERSION: 'v000'
+  DOCKER_REPO: 'polyarch/debian-ports'
+  QEMU_VER: 'v9.0.2-2'
+  OS: 'linux'
 
 jobs:
   debian-ports-docker-arch-build:
