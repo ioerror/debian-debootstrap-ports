@@ -67,7 +67,7 @@ if [ "$DOCKER_REPO" ]; then
     tar -vxf x86_64_qemu-${QEMU_ARCH}-static.tar.gz 
     )
     cat > "${dir}/full/Dockerfile" <<EOF
-FROM ${DOCKER_REPO}:slim
+FROM ${ARCH}/${DOCKER_REPO}:slim
 ADD qemu-* /usr/bin/
 EOF
     docker buildx build --platform linux/$ARCH -t "${DOCKER_REPO}:latest-$ARCH" "${dir}/full"
