@@ -49,11 +49,18 @@ jobs:
           docker push -a ${{ matrix.DOCKER_REPO }}
 
   debian-ports-docker-arch-combine:
+    needs: debian-ports-docker-arch-build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Combine into One Big Union
         run: |
            docker manifest create ${DOCKER_REPO}:${BOOTSTRAP_VERSION} \
@@ -67,12 +74,6 @@ jobs:
       - name: Inspect the combination
         run: |
             docker manifest inspect ${DOCKER_REPO}:${BOOTSTRAP_VERSION}
-      - name: Login to Docker Hub
-        if: github.ref == 'refs/heads/main'
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Publish Docker polyarch manifest
         if: github.ref == 'refs/heads/main'
         run: |
