@@ -62,7 +62,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Combine into One Big Union: ${BOOTSTRAP_VERSION}
+      - name: Combine into One Big Union for this version
         run: |
            docker manifest create ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION} \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-hppa \
@@ -75,7 +75,7 @@ jobs:
       - name: Inspect the combination: ${BOOTSTRAP_VERSION}
         run: |
             docker manifest inspect -v ${DOCKER_REPO}:${BOOTSTRAP_VERSION}
-      - name: Combine into One Big Union: latest
+      - name: Combine into One Big Union for latest
         run: |
            docker manifest create ${DOCKER_REG}${DOCKER_REPO}:latest \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-hppa \
