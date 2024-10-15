@@ -21,7 +21,7 @@ jobs:
   docker-build-ports:
     runs-on: ubuntu-latest
     env:
-        MIRROR: 'https://deb.debian.org/debian-ports'
+      MIRROR: 'https://deb.debian.org/debian-ports'
     strategy:
       fail-fast: false
       matrix:
@@ -31,7 +31,7 @@ jobs:
           - {ARCH: loong64,     QEMU_ARCH: loongarch64, UNAME_ARCH: loong64}
           - {ARCH: m68k,        QEMU_ARCH: m68k,        UNAME_ARCH: m68k}
           - {ARCH: powerpc,     QEMU_ARCH: ppc,         UNAME_ARCH: ppc}
-          - {ARCH: ppc64,       QEMU_ARCH: ppc64,       UNAME_ARCH: ppc64
+          - {ARCH: ppc64,       QEMU_ARCH: ppc64,       UNAME_ARCH: ppc64}
           - {ARCH: sh4,         QEMU_ARCH: sh4,         UNAME_ARCH: sh4}
           - {ARCH: sparc64,     QEMU_ARCH: sparc64,     UNAME_ARCH: sparc64}
     steps:
@@ -54,7 +54,7 @@ jobs:
   docker-build:
     runs-on: ubuntu-latest
     env:
-        MIRROR: 'https://deb.debian.org/debian'
+      MIRROR: 'https://deb.debian.org/debian'
     strategy:
       fail-fast: false
       matrix:
