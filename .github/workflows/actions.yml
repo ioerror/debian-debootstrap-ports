@@ -58,11 +58,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        UNAME_ARCH: [amd64, armv7l, aarch64, x86_64, mips64, ppc64le, riscv64, s390x]
+        UNAME_ARCH: [armv7l, aarch64, x86_64, mips64, ppc64le, riscv64, s390x]
         include:
-          - {ARCH: amd64,       QEMU_ARCH: amd64,       UNAME_ARCH: amd64}
-          - {ARCH: armhf,       QEMU_ARCH: arm32v7,     UNAME_ARCH: armv7l}
-          - {ARCH: arm64,       QEMU_ARCH: arm64v8,     UNAME_ARCH: aarch64}
+          - {ARCH: armhf,       QEMU_ARCH: arm32,       UNAME_ARCH: armv7l}
+          - {ARCH: arm64,       QEMU_ARCH: aarch64,     UNAME_ARCH: aarch64}
           - {ARCH: i386,        QEMU_ARCH: i386,        UNAME_ARCH: x86_64}
           - {ARCH: mips64el,    QEMU_ARCH: mips64el,    UNAME_ARCH: mips64}
           - {ARCH: ppc64el,     QEMU_ARCH: ppc64le,     UNAME_ARCH: ppc64le}
