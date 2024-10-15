@@ -60,7 +60,7 @@ jobs:
       matrix:
         UNAME_ARCH: [armv7l, aarch64, x86_64, mips64, ppc64le, riscv64, s390x]
         include:
-          - {ARCH: armhf,       QEMU_ARCH: arm32,       UNAME_ARCH: armv7l}
+          - {ARCH: armhf,       QEMU_ARCH: arm,         UNAME_ARCH: armv7l}
           - {ARCH: arm64,       QEMU_ARCH: aarch64,     UNAME_ARCH: aarch64}
           - {ARCH: i386,        QEMU_ARCH: i386,        UNAME_ARCH: x86_64}
           - {ARCH: mips64el,    QEMU_ARCH: mips64el,    UNAME_ARCH: mips64}
@@ -85,7 +85,7 @@ jobs:
           docker push -a ${DOCKER_REPO}
 
   docker-combine:
-    needs: docker-build
+    needs: [docker-build, docker-build-ports]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -106,7 +106,14 @@ jobs:
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-powerpc \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sh4 \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sparc64
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sparc64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-armv7l \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-aarch64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-i386 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-mips64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64le \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-riscv64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-s390x
       - name: Inspect the combination for this version
         run: |
             docker manifest inspect -v ${DOCKER_REPO}:${BOOTSTRAP_VERSION}
