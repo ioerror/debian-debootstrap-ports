@@ -72,7 +72,7 @@ jobs:
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sh4 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sparc64
-      - name: Inspect the combination: ${BOOTSTRAP_VERSION}
+      - name: Inspect the combination for this version
         run: |
             docker manifest inspect -v ${DOCKER_REPO}:${BOOTSTRAP_VERSION}
       - name: Combine into One Big Union for latest
@@ -85,14 +85,14 @@ jobs:
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-ppc64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-sh4 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-sparc64
-      - name: Inspect the combination: latest
+      - name: Inspect the combination for latest
         run: |
             docker manifest inspect -v ${DOCKER_REPO}:latest
-      - name: Publish Docker polyarch manifest
+      - name: Publish Docker polyarch manifest for this version
         if: github.ref == 'refs/heads/main'
         run: |
           docker manifest push ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}
-      - name: Publish Docker polyarch manifest
+      - name: Publish Docker polyarch manifest for latest
         if: github.ref == 'refs/heads/main'
         run: |
           docker manifest push ${DOCKER_REG}${DOCKER_REPO}:latest
