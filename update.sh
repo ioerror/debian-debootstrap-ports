@@ -66,12 +66,14 @@ if [ "$DOCKER_REPO" ]; then
     tar -vxf x86_64_qemu-${QEMU_ARCH}-static.tar.gz 
     )
     cat > "${dir}/full/Dockerfile" <<EOF
-FROM ${DOCKER_REPO}:slim-${ARCH}
+FROM ${DOCKER_REPO}:slim
 ADD qemu-* /usr/bin/
 EOF
-    docker buildx build --platform linux/${ARCH} -t "${DOCKER_REPO}:latest-${ARCH}" "${dir}/full"
+    docker buildx build --platform linux/${ARCH} -t "${DOCKER_REPO}:latest" "${dir}/full"
 fi
 
+docker image tag "${DOCKER_REPO}:latest" "${DOCKER_REPO}:latest-${ARCH}"
 docker image tag "${DOCKER_REPO}:latest-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${ARCH}"
+docker image tag "${DOCKER_REPO}:slim" "${DOCKER_REPO}:slim-${ARCH}"
 docker image tag "${DOCKER_REPO}:slim-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${ARCH}-slim"
 docker rmi "${DOCKER_REPO}:slim"
