@@ -71,8 +71,8 @@ if [ "$DOCKER_REPO" ]; then
 FROM ${DOCKER_REPO}:slim
 ADD qemu-* /usr/bin/
 EOF
-  docker buildx build --provenance false --platform $OS/${ARCH} -t "${DOCKER_REPO}:latest-${ARCH}" "${dir}/full"
-  docker image tag "${DOCKER_REPO}:latest-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${ARCH}"
+  docker buildx build --provenance false --platform $OS/${ARCH} -t "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${ARCH}" "${dir}/full"
+  docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${ARCH}" "${DOCKER_REPO}:latest-${ARCH}"
   docker image tag "${DOCKER_REPO}:latest-${ARCH}" "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-qemu-${QEMU_VER}-${ARCH}"
   docker rmi "${DOCKER_REPO}:slim"
 fi

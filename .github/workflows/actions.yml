@@ -46,7 +46,7 @@ jobs:
       - name: Publish Docker images
         if: github.ref == 'refs/heads/main'
         run: |
-          docker push -a ${{ matrix.DOCKER_REPO }}
+          docker push -a ${DOCKER_REPO}
 
   debian-ports-docker-arch-combine:
     needs: debian-ports-docker-arch-build
@@ -73,7 +73,7 @@ jobs:
                             --amend ${BOOTSTRAP_VERSION}-${OS}-sparc64
       - name: Inspect the combination
         run: |
-            docker manifest inspect ${DOCKER_REPO}:${BOOTSTRAP_VERSION}
+            docker manifest inspect -v ${DOCKER_REPO}:${BOOTSTRAP_VERSION}
       - name: Publish Docker polyarch manifest
         if: github.ref == 'refs/heads/main'
         run: |
