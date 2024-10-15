@@ -54,9 +54,10 @@ sudo chown -R "$(id -u):$(id -g)" "$dir"
 xz -d < $dir/rootfs.tar.xz | gzip -c > $dir/rootfs.tar.gz
 sed -i /^ENV/d "${dir}/Dockerfile"
 echo "ENV ARCH=${UNAME_ARCH} UBUNTU_SUITE=${VERSION} DOCKER_REPO=${DOCKER_REPO}" >> "${dir}/Dockerfile"
+echo "ENV ARCH=${UNAME_ARCH} UBUNTU_SUITE=${VERSION} DOCKER_REPO=${DOCKER_REPO}" >> "${dir}/Dockerfile"
 
 if [ "$DOCKER_REPO" ]; then
-    docker build -t "${DOCKER_REPO}:${ARCH}-${VERSION}-slim" "${dir}"
+    docker buildx build --platform linux/$ARCH -t "${DOCKER_REPO}:slim" "${dir}"
     mkdir -p "${dir}/full"
     (
     cd "${dir}/full"
@@ -66,18 +67,17 @@ if [ "$DOCKER_REPO" ]; then
     tar -vxf x86_64_qemu-${QEMU_ARCH}-static.tar.gz 
     )
     cat > "${dir}/full/Dockerfile" <<EOF
-FROM ${DOCKER_REPO}:${ARCH}-${VERSION}-slim
+FROM ${DOCKER_REPO}:slim
 ADD qemu-* /usr/bin/
 EOF
-    docker build -t "${DOCKER_REPO}:${ARCH}-${VERSION}" "${dir}/full"
+    docker buildx build --platform linux/$ARCH -t "${DOCKER_REPO}:latest-$ARCH" "${dir}/full"
 fi
 
-CONTAINER=`docker run --rm ${DOCKER_REPO}:${ARCH}-${VERSION} /bin/bash -c "uname -a; cat /etc/debian_version"`
+CONTAINER=`docker run --platform linux/$ARCH --rm ${DOCKER_REPO}:latest-$ARCH /bin/bash -c "uname -a; cat /etc/debian_version"`
 echo "${CONTAINER}"
 NEW_VERSION=`echo "${CONTAINER}" | tail -1 | tr "/" "-"`
-NEW_VERSION="${NEW_VERSION}-qemu-${QEMU_VER}-${BOOTSTRAP_VERSION}"
+NEW_VERSION="${NEW_VERSION}-${BOOTSTRAP_VERSION}"
 
-docker image tag "${DOCKER_REPO}:${ARCH}-${VERSION}" "${DOCKER_REPO}:${ARCH}-${NEW_VERSION}"
-docker rmi "${DOCKER_REPO}:${ARCH}-${VERSION}"
-docker image tag "${DOCKER_REPO}:${ARCH}-${VERSION}-slim" "${DOCKER_REPO}:${ARCH}-${NEW_VERSION}-slim"
-docker rmi "${DOCKER_REPO}:${ARCH}-${VERSION}-slim"
+docker image tag "${DOCKER_REPO}:latest" "${DOCKER_REPO}:${NEW_VERSION}"
+docker image tag "${DOCKER_REPO}:slim" "${DOCKER_REPO}:${NEW_VERSION}-slim"
+docker rmi "${DOCKER_REPO}:slim"
