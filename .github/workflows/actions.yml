@@ -68,7 +68,7 @@ jobs:
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-hppa \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-loong64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-m68k \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-powerpc \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sh4 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sparc64
