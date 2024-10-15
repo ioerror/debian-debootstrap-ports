@@ -78,6 +78,6 @@ echo "${CONTAINER}"
 NEW_VERSION=`echo "${CONTAINER}" | tail -1 | tr "/" "-"`
 NEW_VERSION="${NEW_VERSION}-${BOOTSTRAP_VERSION}"
 
-docker image tag "${DOCKER_REPO}:latest" "${DOCKER_REPO}:${NEW_VERSION}"
+docker image tag "${DOCKER_REPO}:latest-$ARCH" "${DOCKER_REPO}:$ARCH-${NEW_VERSION}"
 docker image tag "${DOCKER_REPO}:slim" "${DOCKER_REPO}:${NEW_VERSION}-slim"
 docker rmi "${DOCKER_REPO}:slim"
