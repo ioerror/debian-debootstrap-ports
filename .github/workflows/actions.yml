@@ -12,6 +12,7 @@ env:
   DEBIAN_FRONTEND: 'noninteractive'
   BOOTSTRAP_VERSION: 'v000'
   DOCKER_REPO: 'polyarch/debian-ports'
+  DOCKER_REG: 'docker.io/'
   QEMU_VER: 'v9.0.2-2'
   OS: 'linux'
 
@@ -63,18 +64,18 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Combine into One Big Union
         run: |
-           docker manifest create ${DOCKER_REPO}:${BOOTSTRAP_VERSION} \
-                            --amend ${BOOTSTRAP_VERSION}-${OS}-hppa \
-                            --amend ${BOOTSTRAP_VERSION}-${OS}-loong64 \
-                            --amend ${BOOTSTRAP_VERSION}-${OS}-m68k \
-                            --amend ${BOOTSTRAP_VERSION}-${OS}-ppc \
-                            --amend ${BOOTSTRAP_VERSION}-${OS}-ppc64 \
-                            --amend ${BOOTSTRAP_VERSION}-${OS}-sh4 \
-                            --amend ${BOOTSTRAP_VERSION}-${OS}-sparc64
+           docker manifest create ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION} \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-hppa \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-loong64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-m68k \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sh4 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sparc64
       - name: Inspect the combination
         run: |
             docker manifest inspect -v ${DOCKER_REPO}:${BOOTSTRAP_VERSION}
       - name: Publish Docker polyarch manifest
         if: github.ref == 'refs/heads/main'
         run: |
-          docker manifest push
+          docker manifest push ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}
