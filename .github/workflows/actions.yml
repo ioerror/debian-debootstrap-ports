@@ -107,7 +107,7 @@ jobs:
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sh4 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sparc64 \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-armv7l \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-armhf \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-aarch64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-i386 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-mips64 \
@@ -126,7 +126,14 @@ jobs:
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-powerpc \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-ppc64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-sh4 \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-sparc64
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-sparc64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-armhf \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-aarch64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-i386 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-mips64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-ppc64le \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-riscv64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-s390x
       - name: Inspect the combination for latest
         run: |
             docker manifest inspect -v ${DOCKER_REPO}:latest
