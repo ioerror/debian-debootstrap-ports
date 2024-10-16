@@ -17,7 +17,7 @@ env:
   OS: 'linux'
   PORTS_SUITE: 'sid'
   SUPPORTED_SUITE: 'sid'
-  HOST_PACKAGES: 'qemu-user-binfmt debootstrap'
+  HOST_PACKAGES: 'qemu-user-static debootstrap'
 
 jobs:
   docker-build-ports:
