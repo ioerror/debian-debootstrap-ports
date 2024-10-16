@@ -15,8 +15,8 @@ env:
   DOCKER_REG: 'docker.io/'
   QEMU_VER: 'v9.0.2-2'
   OS: 'linux'
-  PORTS_SUITE: 'unstable'
-  SUPPORTED_SUITE: 'unstable'
+  PORTS_SUITE: 'sid'
+  SUPPORTED_SUITE: 'sid'
   HOST_PACKAGES: 'qemu-user-static debootstrap'
 
 jobs:
