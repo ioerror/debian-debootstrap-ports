@@ -1,5 +1,7 @@
 #!/bin/bash
-set -xeo pipefail
+set -x
+set -eo pipefail
+
 
 # A POSIX variable
 OPTIND=1 # Reset in case getopts has been used previously in the shell.
@@ -43,12 +45,15 @@ echo "Environment follows:"
 echo "`env`"
 echo "BEGIN"
 
-EXTRA_PACKAGES="adduser apt-utils apt apt-transport-https autoconf bash build-essential ca-certificates curl debian-ports-archive-keyring git libcap2-bin libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo joe wget"
+EXTRA_PACKAGES="apt-transport-https autoconf bash build-essential ca-certificates curl debian-ports-archive-keyring git libcap2-bin libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo joe wget"
+# Try a very minimal setup, just enough to install packages later
+EXTRA_PACKAGES="apt-transport-https bash ca-certificates debian-ports-archive-keyring git
+lsb-release wget"
 
 dir="$SUITE-$ARCH"
 VARIANT="minbase"
-VERSION_ALT="sid"
-args=( -d "$dir" debootstrap --verbose --no-check-gpg --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$VERSION_ALT" "$MIRROR")
+DEBOOTSTRAP_SCRIPT="sid"
+args=( -d "$dir" debootstrap --verbose --no-check-gpg --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$DEBOOTSTRAP_SCRIPT" "$MIRROR")
 
 mkdir -p mkimage $dir
 curl https://raw.githubusercontent.com/moby/moby/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage.sh > mkimage.sh
@@ -62,7 +67,7 @@ mkimage="$(readlink -f "${MKIMAGE:-"mkimage.sh"}")"
     echo 'https://github.com/moby/moby/blob/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage.sh'
 } > "$dir/build-command.txt"
 
-sudo DEBOOTSTRAP="debootstrap" nice ionice -c 2 "$mkimage" "${args[@]}" 2>&1 | tee "$dir/build.log;"
+sudo DEBOOTSTRAP="debootstrap" nice ionice -c 2 "$mkimage" "${args[@]}" 2>&1 | tee "$dir/build.log"
 cat "$dir/build.log"
 
 sudo chown -R "$(id -u):$(id -g)" "$dir"
