@@ -18,6 +18,7 @@ env:
   PORTS_SUITE: 'sid'
   SUPPORTED_SUITE: 'sid'
   HOST_PACKAGES: 'qemu-user-static debootstrap'
+  APT_CONFIG: 'APT::Sandbox::User=root'
 
 jobs:
   docker-build-ports:
