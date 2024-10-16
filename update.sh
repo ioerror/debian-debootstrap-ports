@@ -57,7 +57,7 @@ mkdir -p mkimage $dir
 if [ $ARCH = 'sparc64' ]; then
   echo 'disabling priv dropping for sparc64 due to upstream issues';
   mkdir -p $dir/rootfs/etc/apt/apt.conf.d/;
-  echo 'APT::Sandbox::User=root' > $dir/rootfs/etc/apt/apt.conf.d/no-user-switch;
+  echo -n 'APT::Sandbox::User "root";' > $dir/rootfs/etc/apt/apt.conf.d/000-no-user-switch;
 fi
 curl https://raw.githubusercontent.com/moby/moby/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage.sh > mkimage.sh
 curl https://raw.githubusercontent.com/moby/moby/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage/debootstrap > mkimage/debootstrap
