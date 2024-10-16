@@ -43,6 +43,7 @@ jobs:
         run: |
           sudo apt update && sudo apt install -y $HOST_PACKAGES
           dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }}
+          ls -alh /proc/sys/fs/binfmt_misc/*
           ./update.sh \
           -a ${{ matrix.ARCH }} \
           -q ${{ matrix.QEMU_ARCH }} \
@@ -89,6 +90,7 @@ jobs:
         run: |
           sudo apt update && sudo apt install -y $HOST_PACKAGES
           dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }}
+          ls -alh /proc/sys/fs/binfmt_misc/*
           ./update.sh \
           -a ${{ matrix.ARCH }} \
           -q ${{ matrix.QEMU_ARCH }} \
