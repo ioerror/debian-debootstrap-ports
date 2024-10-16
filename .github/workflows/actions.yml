@@ -23,7 +23,7 @@ jobs:
   docker-build-ports:
     runs-on: ubuntu-latest
     env:
-      MIRROR: 'https://deb.debian.org/debian-ports'
+      MIRROR: 'https://deb.debian.org/debian-ports/'
     strategy:
       fail-fast: false
       matrix:
@@ -74,7 +74,7 @@ jobs:
   docker-build:
     runs-on: ubuntu-latest
     env:
-      MIRROR: 'https://deb.debian.org/debian'
+      MIRROR: 'https://deb.debian.org/debian/'
     strategy:
       fail-fast: false
       matrix:
