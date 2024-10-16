@@ -41,9 +41,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build
         run: |
+          sudo debconf-set man-db/auto-update false
+          sudo rm /var/lib/man-db/auto-update
           sudo apt update \
           && sudo apt purge -y needrestart \
           && sudo apt install -y $HOST_PACKAGES
+          wget -c http://launchpadlibrarian.net/752571664/qemu-user-static_8.2.2+ds-0ubuntu1.3_amd64.deb
+          sudo dpkg -i /qemu-user-static_8.2.2+ds-0ubuntu1.3_amd64.deb
           dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }}
           ls -alh /proc/sys/fs/binfmt_misc/*
           ./update.sh \
@@ -93,6 +97,8 @@ jobs:
           sudo apt update \
           && sudo apt purge -y needrestart \
           && sudo apt install -y $HOST_PACKAGES
+          wget -c http://launchpadlibrarian.net/752571664/qemu-user-static_8.2.2+ds-0ubuntu1.3_amd64.deb
+          sudo dpkg -i /qemu-user-static_8.2.2+ds-0ubuntu1.3_amd64.deb
           dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }}
           ls -alh /proc/sys/fs/binfmt_misc/*
           ./update.sh \
