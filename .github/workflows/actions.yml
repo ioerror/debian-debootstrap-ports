@@ -15,7 +15,8 @@ env:
   DOCKER_REG: 'docker.io/'
   QEMU_VER: 'v9.0.2-2'
   OS: 'linux'
-  SUITE: 'sid'
+  PORTS_SUITE: 'unstable'
+  SUPPORTED_SUITE: 'testing'
   HOST_PACKAGES: 'qemu-user-static debootstrap debian-archive-keyring debian-ports-archive-keyring'
 
 jobs:
@@ -49,7 +50,7 @@ jobs:
           -u ${QEMU_VER} \
           -d ${DOCKER_REPO} \
           -v ${BOOTSTRAP_VERSION} \
-          -s ${SUITE} \
+          -s ${PORTS_SUITE} \
           -z ${OS} \
           -m ${MIRROR}
       - name: Login to Docker Hub
@@ -94,7 +95,7 @@ jobs:
           -u ${QEMU_VER} \
           -d ${DOCKER_REPO} \
           -v ${BOOTSTRAP_VERSION} \
-          -s ${SUITE} \
+          -s ${SUPPORTED_SUITE} \
           -z ${OS} \
           -m ${MIRROR}
       - name: Login to Docker Hub
