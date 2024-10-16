@@ -21,7 +21,7 @@ env:
 
 jobs:
   docker-build-ports:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu:24.04
     env:
       MIRROR: 'http://deb.debian.org/debian-ports'
     strategy:
@@ -42,6 +42,7 @@ jobs:
       - name: Build
         run: |
           sudo apt update && sudo apt install -y $HOST_PACKAGES
+          dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }}
           ./update.sh \
           -a ${{ matrix.ARCH }} \
           -q ${{ matrix.QEMU_ARCH }} \
@@ -65,7 +66,7 @@ jobs:
           docker push -a ${DOCKER_REPO}
 
   docker-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu:24.04
     env:
       MIRROR: 'http://deb.debian.org/debian'
     strategy:
@@ -87,6 +88,7 @@ jobs:
       - name: Build
         run: |
           sudo apt update && sudo apt install -y $HOST_PACKAGES
+          dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }}
           ./update.sh \
           -a ${{ matrix.ARCH }} \
           -q ${{ matrix.QEMU_ARCH }} \

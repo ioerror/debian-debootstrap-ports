@@ -34,7 +34,11 @@ shift $((OPTIND-1))
 [ "$1" = "--" ] && shift
 
 CONTAINER_PLATFORM="${OS}/${CONTAINER_ARCH}"
-echo "Building Debian $ARCH/$SUITE for Docker $CONTAINER_PLATFORM with qemu $QEMU_ARCH $QEMU_VER"
+echo "update.sh: $BOOTSTRAP_VERSION"
+echo "ARCH=$UNAME_ARCH"
+echo "Building Debian $ARCH/$SUITE for Docker $DOCKER_REPO on $CONTAINER_PLATFORM"
+echo "qemu-$QEMU_VER emulating $QEMU_ARCH"
+echo "Fetching from $MIRROR"
 
 EXTRA_PACKAGES="adduser apt apt-transport-https autoconf bash build-essential ca-certificates curl debian-ports-archive-keyring git libcap2-bin libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo joe wget"
 
@@ -55,7 +59,7 @@ mkimage="$(readlink -f "${MKIMAGE:-"mkimage.sh"}")"
     echo 'https://github.com/moby/moby/blob/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage.sh'
 } > "$dir/build-command.txt"
 
-sudo DEBOOTSTRAP="debootstrap" nice ionice -c 2 "$mkimage" "${args[@]}" 2>&1 | tee "$dir/build.log"
+sudo DEBOOTSTRAP="debootstrap" nice ionice -c 2 "$mkimage" "${args[@]}" 2>&1 | tee "$dir/build.log; cat /home/runner/work/debian-debootstrap-ports/debian-debootstrap-ports/*/rootfs/debootstrap/debootstrap.log"
 cat "$dir/build.log"
 
 sudo chown -R "$(id -u):$(id -g)" "$dir"
