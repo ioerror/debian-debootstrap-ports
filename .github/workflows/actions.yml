@@ -17,7 +17,7 @@ env:
   OS: 'linux'
   PORTS_SUITE: 'sid'
   SUPPORTED_SUITE: 'sid'
-  HOST_PACKAGES: 'qemu-user-static qemu-user-binfmt debootstrap'
+  HOST_PACKAGES: 'qemu-user-binfmt debootstrap'
 
 jobs:
   docker-build-ports:
@@ -41,6 +41,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build
         run: |
+          export  GNUTLS_CPUID_OVERRIDE=0x1
           sudo rm /var/lib/man-db/auto-update;
           echo "man-db man-db/auto-update boolean false" | sudo debconf-set-selections;
           sudo apt update;
@@ -92,6 +93,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build
         run: |
+          export  GNUTLS_CPUID_OVERRIDE=0x1
           sudo rm /var/lib/man-db/auto-update;
           echo "man-db man-db/auto-update boolean false" | sudo debconf-set-selections;
           sudo apt purge -y needrestart;
