@@ -34,7 +34,7 @@ shift $((OPTIND-1))
 [ "$1" = "--" ] && shift
 
 CONTAINER_PLATFORM=${OS}/${CONTAINER_ARCH}
-echo "Building Debian $SUITE for Docker $CONTAINER_PLATFORM with qemu $QEMU_ARCH $QEMU_VER"
+echo "Building Debian $UNAME_ARCH/$SUITE for Docker $CONTAINER_PLATFORM with qemu $QEMU_ARCH $QEMU_VER"
 
 EXTRA_PACKAGES="adduser apt-transport-https autoconf bash build-essential ca-certificates curl debian-ports-archive-keyring git libcap2-bin libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo joe wget"
 
