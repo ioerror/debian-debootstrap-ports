@@ -121,7 +121,7 @@ jobs:
 
   docker-combine:
     needs: [build-supported, build-ports]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
     steps:
@@ -187,7 +187,7 @@ jobs:
 
   docker-uname:
     needs: [docker-combine]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
