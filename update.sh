@@ -4,11 +4,11 @@ set -eo pipefail
 # A POSIX variable
 OPTIND=1 # Reset in case getopts has been used previously in the shell.
 
-while getopts "a:b:c:s:q:u:d:o:m:z:" opt; do
+while getopts "a:v:c:s:q:u:d:o:m:z:" opt; do
     case "$opt" in
     a)  ARCH=$OPTARG
         ;;
-    b)  BOOTSTRAP_VERSION=$OPTARG
+    v)  BOOTSTRAP_VERSION=$OPTARG
         ;;
     c)  CONTAINER_ARCH=$OPTARG
         ;;

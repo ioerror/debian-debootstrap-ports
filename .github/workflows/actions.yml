@@ -39,7 +39,7 @@ jobs:
       - name: Build
         run: |
           sudo apt update && sudo apt install -y qemu-user-static debootstrap
-          ./update.sh -a ${{ matrix.ARCH }} -b ${BOOTSTRAP_VERSION} -s ${SUITE} \
+          ./update.sh -a ${{ matrix.ARCH }} -v ${BOOTSTRAP_VERSION} -s ${SUITE} \
           -q ${{ matrix.QEMU_ARCH }} -u ${QEMU_VER} -d ${DOCKER_REPO} \
           -o ${{ matrix.UNAME_ARCH }} -c ${{ matrix.CONTAINER_ARCH }} \
           -z ${OS} -m ${MIRROR}
@@ -77,7 +77,7 @@ jobs:
       - name: Build
         run: |
           sudo apt update && sudo apt install -y qemu-user-static debootstrap
-          ./update.sh -a ${{ matrix.ARCH }} -b ${BOOTSTRAP_VERSION} -s ${SUITE} \
+          ./update.sh -a ${{ matrix.ARCH }} -v ${BOOTSTRAP_VERSION} -s ${SUITE} \
           -q ${{ matrix.QEMU_ARCH }} -u ${QEMU_VER} -d ${DOCKER_REPO} \
           -o ${{ matrix.UNAME_ARCH }} -c ${{ matrix.CONTAINER_ARCH }} \
           -z ${OS} -m ${MIRROR}
