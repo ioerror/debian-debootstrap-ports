@@ -1,14 +1,12 @@
 #!/bin/bash
-set -eo pipefail
+set -xeo pipefail
 
 # A POSIX variable
 OPTIND=1 # Reset in case getopts has been used previously in the shell.
 
-while getopts "a:v:c:s:q:u:d:o:m:z:" opt; do
+while getopts "a:c:s:q:u:d:o:m:v:z:" opt; do
     case "$opt" in
     a)  ARCH=$OPTARG
-        ;;
-    v)  BOOTSTRAP_VERSION=$OPTARG
         ;;
     c)  CONTAINER_ARCH=$OPTARG
         ;;
@@ -24,6 +22,8 @@ while getopts "a:v:c:s:q:u:d:o:m:z:" opt; do
         ;;
     m)  MIRROR=$OPTARG
         ;;
+    v)  BOOTSTRAP_VERSION=$OPTARG
+        ;;
     z)  OS=$OPTARG
         ;;
     esac
@@ -33,8 +33,8 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
-CONTAINER_PLATFORM=${OS}/${CONTAINER_ARCH}
-echo "Building Debian $UNAME_ARCH/$SUITE for Docker $CONTAINER_PLATFORM with qemu $QEMU_ARCH $QEMU_VER"
+CONTAINER_PLATFORM="${OS}/${CONTAINER_ARCH}"
+echo "Building Debian $ARCH/$SUITE for Docker $CONTAINER_PLATFORM with qemu $QEMU_ARCH $QEMU_VER"
 
 EXTRA_PACKAGES="adduser apt-transport-https autoconf bash build-essential ca-certificates curl debian-ports-archive-keyring git libcap2-bin libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo joe wget"
 
