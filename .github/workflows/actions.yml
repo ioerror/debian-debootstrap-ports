@@ -106,10 +106,10 @@ jobs:
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-i386 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-loong64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-m68k \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-mips64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-mips64el \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-powerpc \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64 \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64le \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64el \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-riscv64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-s390x \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-sh4 \
@@ -127,10 +127,10 @@ jobs:
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-i386 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-loong64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-m68k \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-mips64 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-mips64el \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-powerpc \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-ppc64 \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-ppc64le \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-ppc64el \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-riscv64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-s390x \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-sh4 \
