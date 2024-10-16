@@ -15,7 +15,7 @@ env:
   DOCKER_REG: 'docker.io/'
   QEMU_VER: 'v9.0.2-2'
   OS: 'linux'
-  VERSION: 'sid'
+  SUITE: 'sid'
 
 jobs:
   docker-build-ports:
@@ -27,19 +27,22 @@ jobs:
       matrix:
         UNAME_ARCH: [hppa, loong64, m68k, ppc, ppc64, sh4, sparc64]
         include:
-          - {ARCH: hppa,        QEMU_ARCH: hppa,        UNAME_ARCH: hppa}
-          - {ARCH: loong64,     QEMU_ARCH: loongarch64, UNAME_ARCH: loong64}
-          - {ARCH: m68k,        QEMU_ARCH: m68k,        UNAME_ARCH: m68k}
-          - {ARCH: powerpc,     QEMU_ARCH: ppc,         UNAME_ARCH: ppc}
-          - {ARCH: ppc64,       QEMU_ARCH: ppc64,       UNAME_ARCH: ppc64}
-          - {ARCH: sh4,         QEMU_ARCH: sh4,         UNAME_ARCH: sh4}
-          - {ARCH: sparc64,     QEMU_ARCH: sparc64,     UNAME_ARCH: sparc64}
+          - {ARCH: hppa,        QEMU_ARCH: hppa,        UNAME_ARCH: hppa, CONTAINER_ARCH: hppa}
+          - {ARCH: loong64,     QEMU_ARCH: loongarch64, UNAME_ARCH: loong64, CONTAINER_ARCH: loong64}
+          - {ARCH: m68k,        QEMU_ARCH: m68k,        UNAME_ARCH: m68k, CONTAINER_ARCH: m68k}
+          - {ARCH: powerpc,     QEMU_ARCH: ppc,         UNAME_ARCH: ppc, CONTAINER_ARCH: powerpc}
+          - {ARCH: ppc64,       QEMU_ARCH: ppc64,       UNAME_ARCH: ppc64, CONTAINER_ARCH: ppc64}
+          - {ARCH: sh4,         QEMU_ARCH: sh4,         UNAME_ARCH: sh4, CONTAINER_ARCH: sh4}
+          - {ARCH: sparc64,     QEMU_ARCH: sparc64,     UNAME_ARCH: sparc64, CONTAINER_ARCH: sparc64}
     steps:
       - uses: actions/checkout@v4
       - name: Build
         run: |
           sudo apt update && sudo apt install -y qemu-user-static debootstrap
-          ./update.sh -a ${{ matrix.ARCH }} -b ${BOOTSTRAP_VERSION} -v ${VERSION} -q ${{ matrix.QEMU_ARCH }} -u ${QEMU_VER} -d ${DOCKER_REPO} -o ${{ matrix.UNAME_ARCH }} -m ${MIRROR}
+          ./update.sh -a ${{ matrix.ARCH }} -b ${BOOTSTRAP_VERSION} -s ${SUITE} \
+          -q ${{ matrix.QEMU_ARCH }} -u ${QEMU_VER} -d ${DOCKER_REPO} \
+          -o ${{ matrix.UNAME_ARCH }} -c ${{ matrix.CONTAINER_ARCH }} \
+          -z ${OS} -m ${MIRROR}
       - name: Login to Docker Hub
         if: github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
@@ -58,21 +61,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        UNAME_ARCH: [armv7l, aarch64, x86_64, mips64, ppc64le, riscv64, s390x]
+        CONTAINER_ARCH: [amd64, armv7l, aarch64, x86_64, mips64, ppc64le, riscv64, s390x]
         include:
-          - {ARCH: armhf,       QEMU_ARCH: arm,         UNAME_ARCH: armv7l}
-          - {ARCH: arm64,       QEMU_ARCH: aarch64,     UNAME_ARCH: aarch64}
-          - {ARCH: i386,        QEMU_ARCH: i386,        UNAME_ARCH: x86_64}
-          - {ARCH: mips64el,    QEMU_ARCH: mips64el,    UNAME_ARCH: mips64}
-          - {ARCH: ppc64el,     QEMU_ARCH: ppc64le,     UNAME_ARCH: ppc64le}
-          - {ARCH: riscv64,     QEMU_ARCH: riscv64,     UNAME_ARCH: riscv64}
-          - {ARCH: s390x,       QEMU_ARCH: s390x,       UNAME_ARCH: s390x}
+        - {ARCH: amd64,   QEMU_ARCH: x86_64,   UNAME_ARCH: x86_64, CONTAINER_ARCH: amd64}
+        - {ARCH: armel,   QEMU_ARCH: arm,      UNAME_ARCH: armv7l, CONTAINER_ARCH: arm32v5}
+        - {ARCH: armhf,   QEMU_ARCH: arm,      UNAME_ARCH: armv7l, CONTAINER_ARCH: arm32v7}
+        - {ARCH: arm64,   QEMU_ARCH: aarch64,  UNAME_ARCH: aarch64, CONTAINER_ARCH: arm64v8}
+        - {ARCH: i386,    QEMU_ARCH: i386,     UNAME_ARCH: x86_64, CONTAINER_ARCH: i386}
+        - {ARCH: mips64el, QEMU_ARCH: mips64el, UNAME_ARCH: mips64, CONTAINER_ARCH: mips64}
+        - {ARCH: ppc64el, QEMU_ARCH: ppc64le,  UNAME_ARCH: ppc64le, CONTAINER_ARCH: ppc64le}
+        - {ARCH: riscv64, QEMU_ARCH: riscv64,  UNAME_ARCH: riscv64, CONTAINER_ARCH: riscv64}
+        - {ARCH: s390x,   QEMU_ARCH: s390x,    UNAME_ARCH: s390x, CONTAINER_ARCH: s390x}
     steps:
       - uses: actions/checkout@v4
       - name: Build
         run: |
           sudo apt update && sudo apt install -y qemu-user-static debootstrap
-          ./update.sh -a ${{ matrix.ARCH }} -b ${BOOTSTRAP_VERSION} -v ${VERSION} -q ${{ matrix.QEMU_ARCH }} -u ${QEMU_VER} -d ${DOCKER_REPO} -o ${{ matrix.UNAME_ARCH }} -m ${MIRROR}
+          ./update.sh -a ${{ matrix.ARCH }} -b ${BOOTSTRAP_VERSION} -s ${SUITE} \
+          -q ${{ matrix.QEMU_ARCH }} -u ${QEMU_VER} -d ${DOCKER_REPO} \
+          -o ${{ matrix.UNAME_ARCH }} -c ${{ matrix.CONTAINER_ARCH }} \
+          -z ${OS} -m ${MIRROR}
       - name: Login to Docker Hub
         if: github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
@@ -166,5 +174,5 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: uname
         run: |
-            docker run --platform linux/${DOCKER_ARCH} --rm -it \
+            docker run --platform linux/${DOCKER_ARCH} --rm -t \
             polyarch/debian-ports:latest uname -a

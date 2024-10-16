@@ -10,7 +10,9 @@ while getopts "a:b:v:q:u:d:s:i:o:" opt; do
         ;;
     b)  BOOTSTRAP_VERSION=$OPTARG
         ;;
-    v)  VERSION=$OPTARG
+    c)  CONTAINER_ARCH=$OPTARG
+        ;;
+    s)  SUITE=$OPTARG
         ;;
     q)  QEMU_ARCH=$OPTARG
         ;;
@@ -22,18 +24,21 @@ while getopts "a:b:v:q:u:d:s:i:o:" opt; do
         ;;
     m)  MIRROR=$OPTARG
         ;;
+    z)  OS=$OPTARG
+        ;;
     esac
 done
-
-OS=linux
 
 shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
+CONTAINER_PLATFORM=${OS}/${CONTAINER_ARCH}
+echo "Building Debian $SUITE for Docker $CONTAINER_PLATFORM with qemu $QEMU_ARCH $QEMU_VER"
+
 EXTRA_PACKAGES="adduser apt-transport-https autoconf bash build-essential ca-certificates curl debian-ports-archive-keyring git libcap2-bin libnetfilter-queue-dev libnfnetlink-dev libsodium-dev libssl-dev lsb-release nftables python3 python3-build python3-dev python3-venv python3-virtualenv sudo joe wget"
 
-dir="$VERSION-$ARCH"
+dir="$SUITE-$ARCH"
 VARIANT="minbase"
 VERSION_ALT="sid"
 args=( -d "$dir" debootstrap --verbose --no-check-gpg --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$VERSION_ALT" "$MIRROR")
@@ -57,10 +62,10 @@ sudo chown -R "$(id -u):$(id -g)" "$dir"
 
 xz -d < $dir/rootfs.tar.xz | gzip -c > $dir/rootfs.tar.gz
 sed -i /^ENV/d "${dir}/Dockerfile"
-echo "ENV ARCH=${UNAME_ARCH} UBUNTU_SUITE=${VERSION} DOCKER_REPO=${DOCKER_REPO}" >> "${dir}/Dockerfile"
+echo "ENV ARCH=${UNAME_ARCH} UBUNTU_SUITE=${SUITE} DOCKER_REPO=${DOCKER_REPO}" >> "${dir}/Dockerfile"
 
 if [ "$DOCKER_REPO" ]; then
-  docker buildx build --provenance false --platform $OS/${ARCH} -t "${DOCKER_REPO}:slim" "${dir}"
+  docker buildx build --provenance false --platform $PLATFORM -t "${DOCKER_REPO}:slim" "${dir}"
   mkdir -p "${dir}/full"
   (
   cd "${dir}/full"
@@ -73,7 +78,7 @@ if [ "$DOCKER_REPO" ]; then
 FROM ${DOCKER_REPO}:slim
 ADD qemu-* /usr/bin/
 EOF
-  docker buildx build --provenance false --platform $OS/${ARCH} -t "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${ARCH}" "${dir}/full"
+  docker buildx build --provenance false --platform $PLATFORM -t "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${ARCH}" "${dir}/full"
   docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${ARCH}" "${DOCKER_REPO}:latest-${OS}-${ARCH}"
   docker rmi "${DOCKER_REPO}:slim"
 fi
