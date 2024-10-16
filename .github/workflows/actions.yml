@@ -47,7 +47,7 @@ jobs:
           echo "man-db man-db/auto-update boolean false" | sudo debconf-set-selections;
           sudo apt update;
           sudo apt purge -y needrestart;
-          sudo apt install -y $HOST_PACKAGES;
+          sudo apt install -y $HOST_PACKAGES || true;
           dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }};
           ls -alh /proc/sys/fs/binfmt_misc/*;
           ./update.sh \
@@ -99,7 +99,7 @@ jobs:
           echo "man-db man-db/auto-update boolean false" | sudo debconf-set-selections;
           sudo apt purge -y needrestart;
           sudo apt update;
-          sudo apt install -y $HOST_PACKAGES;
+          sudo apt install -y $HOST_PACKAGES || true;
           dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }};
           ls -alh /proc/sys/fs/binfmt_misc/*;
           ./update.sh \
