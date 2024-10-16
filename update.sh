@@ -54,11 +54,11 @@ VARIANT="minbase"
 args=( -d "$dir" debootstrap --verbose --no-check-gpg --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$SUITE" "$MIRROR")
 
 mkdir -p mkimage $dir
-if [ $ARCH = 'sparc64' ]; then
-  echo 'disabling priv dropping for sparc64 due to upstream issues';
-  mkdir -p $dir/rootfs/etc/apt/apt.conf.d/;
-  echo -n 'APT::Sandbox::User "root";' > $dir/rootfs/etc/apt/apt.conf.d/000-no-user-switch;
-fi
+# if [ $ARCH = 'sparc64' ]; then
+#   echo 'disabling priv dropping for sparc64 due to upstream issues';
+#   mkdir -p $dir/rootfs/etc/apt/apt.conf.d/;
+#   echo -n 'APT::Sandbox::User "root";' > $dir/rootfs/etc/apt/apt.conf.d/000-no-user-switch;
+# fi
 curl https://raw.githubusercontent.com/moby/moby/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage.sh > mkimage.sh
 curl https://raw.githubusercontent.com/moby/moby/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage/debootstrap > mkimage/debootstrap
 chmod +x mkimage.sh mkimage/debootstrap
