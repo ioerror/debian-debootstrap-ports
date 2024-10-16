@@ -65,7 +65,7 @@ sed -i /^ENV/d "${dir}/Dockerfile"
 echo "ENV ARCH=${UNAME_ARCH} UBUNTU_SUITE=${SUITE} DOCKER_REPO=${DOCKER_REPO}" >> "${dir}/Dockerfile"
 
 if [ "$DOCKER_REPO" ]; then
-  docker buildx build --provenance false --platform $PLATFORM -t "${DOCKER_REPO}:slim" "${dir}"
+  docker buildx build --provenance false --platform $CONTAINER_PLATFORM -t "${DOCKER_REPO}:slim" "${dir}"
   mkdir -p "${dir}/full"
   (
   cd "${dir}/full"
@@ -78,7 +78,7 @@ if [ "$DOCKER_REPO" ]; then
 FROM ${DOCKER_REPO}:slim
 ADD qemu-* /usr/bin/
 EOF
-  docker buildx build --provenance false --platform $PLATFORM -t "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${ARCH}" "${dir}/full"
+  docker buildx build --provenance false --platform $CONTAINER_PLATFORM -t "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${ARCH}" "${dir}/full"
   docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${ARCH}" "${DOCKER_REPO}:latest-${OS}-${ARCH}"
   docker rmi "${DOCKER_REPO}:slim"
 fi
