@@ -21,7 +21,7 @@ env:
 
 jobs:
   docker-build-ports:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       MIRROR: 'https://deb.debian.org/debian-ports/'
     strategy:
@@ -72,7 +72,7 @@ jobs:
           docker push -a ${DOCKER_REPO}
 
   docker-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       MIRROR: 'https://deb.debian.org/debian/'
     strategy:
