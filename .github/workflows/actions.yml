@@ -208,6 +208,8 @@ jobs:
             echo "man-db man-db/auto-update boolean false" | sudo debconf-set-selections;
             sudo apt purge -y needrestart;
             sudo apt update;
+            sudo apt upgrade -y;
+            ls -alh /proc/sys/fs/binfmt_misc/*;
             sudo bash -c "apt install -y $HOST_PACKAGES || true";
             dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }};
             ls -alh /proc/sys/fs/binfmt_misc/*;
