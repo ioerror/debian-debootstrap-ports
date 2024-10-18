@@ -41,7 +41,8 @@ jobs:
         run: |
           sudo rm /var/lib/man-db/auto-update;
           echo "man-db man-db/auto-update boolean false" | sudo debconf-set-selections;
-          sudo apt purge -y needrestart;
+          sudo apt purge -y needrestart snapd;
+          sudo apt-mark hold snapd;
           sudo apt update;
           sudo bash -c "apt install -y $HOST_PACKAGES || true";
           dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }};
