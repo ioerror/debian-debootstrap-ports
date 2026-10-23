@@ -16,7 +16,7 @@ env:
   OS: 'linux'
   PORTS_SUITE: 'sid'
   SUPPORTED_SUITE: 'sid'
-  HOST_PACKAGES: 'qemu-user-binfmt debootstrap'
+  HOST_PACKAGES: 'qemu-user-binfmt debootstrap debian-archive-keyring debian-ports-archive-keyring'
 
 jobs:
   build-ports:

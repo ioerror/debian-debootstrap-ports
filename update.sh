@@ -54,7 +54,9 @@ EXTRA_PACKAGES="apt-transport-https bash ca-certificates debian-archive-keyring 
 
 dir="$SUITE-$ARCH"
 VARIANT="minbase"
-args=( -d "$dir" debootstrap --verbose --no-check-gpg --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$SUITE" "$MIRROR")
+KEYRING=/usr/share/keyrings/debian-archive-keyring.gpg
+case "$MIRROR" in *debian-ports*) KEYRING=/usr/share/keyrings/debian-ports-archive-keyring.gpg;; esac
+args=( -d "$dir" debootstrap --verbose --keyring="$KEYRING" --variant="$VARIANT" --include="$EXTRA_PACKAGES" --arch="$ARCH" "$SUITE" "$MIRROR")
 
 mkdir -p mkimage $dir
 # if [ $ARCH = 'sparc64' ]; then
@@ -64,6 +66,10 @@ mkdir -p mkimage $dir
 # fi
 curl https://raw.githubusercontent.com/moby/moby/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage.sh > mkimage.sh
 curl https://raw.githubusercontent.com/moby/moby/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage/debootstrap > mkimage/debootstrap
+sha256sum -c - <<'SUMS'
+db365ae095e3434a02bff2f7a139555e6631044f2973a714649d86d3b405e9ff  mkimage.sh
+b3aa5e05ddb3d8576f382f4d4d3e510f9c7fe007f8f37e1b2c54c16c65efd8f1  mkimage/debootstrap
+SUMS
 chmod +x mkimage.sh mkimage/debootstrap
 
 mkimage="$(readlink -f "${MKIMAGE:-"mkimage.sh"}")"
@@ -85,11 +91,13 @@ if [ "$DOCKER_REPO" ]; then
   docker buildx build --provenance false --platform $CONTAINER_PLATFORM -t "${DOCKER_REPO}:slim" "${dir}"
   [ -z "$LEGACY_REPO" ] || docker image tag "${DOCKER_REPO}:slim" "${LEGACY_REPO}:${ARCH}-trixie-sid-slim"
   mkdir -p "${dir}/full"
+  sums="$(readlink -f "qemu-${QEMU_VER}.sha256")"
   (
   cd "${dir}/full"
   if [ ! -f x86_64_qemu-${QEMU_ARCH}-static.tar.gz ]; then
       wget -N https://github.com/ioerror/qemu-user-static/releases/download/${QEMU_VER}/x86_64_qemu-${QEMU_ARCH}-static.tar.gz
   fi
+  grep " x86_64_qemu-${QEMU_ARCH}-static.tar.gz$" "$sums" | sha256sum -c -
   tar -vxf x86_64_qemu-${QEMU_ARCH}-static.tar.gz
   )
   cat > "${dir}/full/Dockerfile" <<EOF
