@@ -79,6 +79,18 @@ mkimage="$(readlink -f "${MKIMAGE:-"mkimage.sh"}")"
     echo 'https://github.com/moby/moby/blob/6f78b438b88511732ba4ac7c7c9097d148ae3568/contrib/mkimage.sh'
 } > "$dir/build-command.txt"
 
+mkdir -p "${dir}/full"
+sums="$(readlink -f "qemu-${QEMU_VER}.sha256")"
+(
+cd "${dir}/full"
+if [ ! -f x86_64_qemu-${QEMU_ARCH}-static.tar.gz ]; then
+    wget -N https://github.com/ioerror/qemu-user-static/releases/download/${QEMU_VER}/x86_64_qemu-${QEMU_ARCH}-static.tar.gz
+fi
+grep " x86_64_qemu-${QEMU_ARCH}-static.tar.gz$" "$sums" | sha256sum -c -
+tar -vxf x86_64_qemu-${QEMU_ARCH}-static.tar.gz
+)
+./binfmt.sh "$(readlink -f "${dir}/full")" yes "$QEMU_ARCH"
+
 sudo DEBOOTSTRAP="debootstrap" nice ionice -c 2 "$mkimage" "${args[@]}" 2>&1 | tee "$dir/build.log"
 cat "$dir/build.log"
 sudo chown -R "$(id -u):$(id -g)" "$dir"
@@ -90,16 +102,6 @@ echo "ENV ARCH=${UNAME_ARCH} UBUNTU_SUITE=${SUITE} DOCKER_REPO=${DOCKER_REPO}" >
 if [ "$DOCKER_REPO" ]; then
   docker buildx build --provenance false --platform $CONTAINER_PLATFORM -t "${DOCKER_REPO}:slim" "${dir}"
   [ -z "$LEGACY_REPO" ] || docker image tag "${DOCKER_REPO}:slim" "${LEGACY_REPO}:${ARCH}-trixie-sid-slim"
-  mkdir -p "${dir}/full"
-  sums="$(readlink -f "qemu-${QEMU_VER}.sha256")"
-  (
-  cd "${dir}/full"
-  if [ ! -f x86_64_qemu-${QEMU_ARCH}-static.tar.gz ]; then
-      wget -N https://github.com/ioerror/qemu-user-static/releases/download/${QEMU_VER}/x86_64_qemu-${QEMU_ARCH}-static.tar.gz
-  fi
-  grep " x86_64_qemu-${QEMU_ARCH}-static.tar.gz$" "$sums" | sha256sum -c -
-  tar -vxf x86_64_qemu-${QEMU_ARCH}-static.tar.gz
-  )
   cat > "${dir}/full/Dockerfile" <<EOF
 FROM ${DOCKER_REPO}:slim
 ADD qemu-* /usr/bin/
