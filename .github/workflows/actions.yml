@@ -133,7 +133,7 @@ jobs:
       - name: Check every image
         run: |
           for f in images-*/images.tar.gz; do gunzip -c "$f" | docker load; done
-          ./binfmt.sh /usr/bin no alpha arm aarch64 hppa loongarch64 m68k mips64el ppc ppc64 ppc64le riscv64 s390x sh4 sparc64
+          ./binfmt.sh /usr/bin no
           for i in $(docker image ls --format '{{.Repository}}:{{.Tag}}' | grep "^${DOCKER_REPO}:${BOOTSTRAP_VERSION}-"); do docker run --rm --platform "$(docker image inspect -f '{{.Os}}/{{.Architecture}}{{if .Variant}}/{{.Variant}}{{end}}' "$i")" "$i" uname -a; done
       - name: Login to Docker Hub
         if: github.ref == 'refs/heads/main'
@@ -232,7 +232,7 @@ jobs:
             sudo apt-mark hold snapd;
             sudo apt update;
             ls -alh /proc/sys/fs/binfmt_misc/*;
-            ./binfmt.sh /usr/bin no alpha arm aarch64 hppa loongarch64 m68k mips64el ppc ppc64 ppc64le riscv64 s390x sh4 sparc64;
+            ./binfmt.sh /usr/bin no;
             ls -alh /proc/sys/fs/binfmt_misc/*;
             docker run --platform linux/${{ matrix.QEMU_ARCH }} --rm -t \
             polyarch/debian-ports:latest uname -a
