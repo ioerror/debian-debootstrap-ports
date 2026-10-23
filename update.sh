@@ -6,7 +6,7 @@ set -eo pipefail
 # A POSIX variable
 OPTIND=1 # Reset in case getopts has been used previously in the shell.
 
-while getopts "a:c:s:q:u:d:o:m:v:z:" opt; do
+while getopts "a:c:s:q:u:d:o:m:v:z:l:" opt; do
     case "$opt" in
     a)  ARCH=$OPTARG
         ;;
@@ -28,6 +28,8 @@ while getopts "a:c:s:q:u:d:o:m:v:z:" opt; do
         ;;
     z)  OS=$OPTARG
         ;;
+    l)  LEGACY_REPO=$OPTARG
+        ;;
     esac
 done
 
@@ -36,6 +38,7 @@ shift $((OPTIND-1))
 [ "$1" = "--" ] && shift
 
 CONTAINER_PLATFORM="${OS}/${CONTAINER_ARCH}"
+SFX=""; [ "$SUITE" = sid ] || SFX="-$SUITE"
 echo "update.sh: $BOOTSTRAP_VERSION"
 echo "ARCH=$ARCH"
 echo "Building Debian $UNAME_ARCH/$SUITE for Docker $DOCKER_REPO on $CONTAINER_PLATFORM"
@@ -80,6 +83,7 @@ echo "ENV ARCH=${UNAME_ARCH} UBUNTU_SUITE=${SUITE} DOCKER_REPO=${DOCKER_REPO}" >
 
 if [ "$DOCKER_REPO" ]; then
   docker buildx build --provenance false --platform $CONTAINER_PLATFORM -t "${DOCKER_REPO}:slim" "${dir}"
+  [ -z "$LEGACY_REPO" ] || docker image tag "${DOCKER_REPO}:slim" "${LEGACY_REPO}:${ARCH}-trixie-sid-slim"
   mkdir -p "${dir}/full"
   (
   cd "${dir}/full"
@@ -92,9 +96,10 @@ if [ "$DOCKER_REPO" ]; then
 FROM ${DOCKER_REPO}:slim
 ADD qemu-* /usr/bin/
 EOF
-  docker buildx build --provenance false --platform $CONTAINER_PLATFORM -t "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}" "${dir}/full"
-  docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}" "${DOCKER_REPO}:latest-${OS}-${CONTAINER_ARCH}"
-  docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}" "${DOCKER_REPO}:latest-${OS}-${ARCH}" || true
+  docker buildx build --provenance false --platform $CONTAINER_PLATFORM -t "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}${SFX}" "${dir}/full"
+  docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}${SFX}" "${DOCKER_REPO}:latest-${OS}-${CONTAINER_ARCH}${SFX}"
+  docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}${SFX}" "${DOCKER_REPO}:latest-${OS}-${ARCH}${SFX}" || true
+  [ -z "$LEGACY_REPO" ] || docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}" "${LEGACY_REPO}:${ARCH}-trixie-sid"
   docker rmi "${DOCKER_REPO}:slim"
 fi
 echo "END"

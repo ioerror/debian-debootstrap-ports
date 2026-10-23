@@ -8,44 +8,44 @@ on:
 
 env:
   DEBIAN_FRONTEND: 'noninteractive'
-  BOOTSTRAP_VERSION: 'v0.0.0'
+  BOOTSTRAP_VERSION: 'v0.0.1'
   DOCKER_REPO: 'polyarch/debian-ports'
   DOCKER_REG: 'docker.io/'
-  QEMU_VER: 'v9.0.2-2'
+  QEMU_VER: 'v11.1.2-1'
+  LEGACY_REPO: 'polyarch/debian-debootstrap-ports'
   OS: 'linux'
   PORTS_SUITE: 'sid'
   SUPPORTED_SUITE: 'sid'
-  HOST_PACKAGES: 'qemu-user-static debootstrap'
+  HOST_PACKAGES: 'qemu-user-binfmt debootstrap'
 
 jobs:
   build-ports:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     env:
       MIRROR: 'https://deb.debian.org/debian-ports/'
     strategy:
       fail-fast: false
       matrix:
-        CONTAINER_ARCH: [alpha, hppa, loong64, m68k, ppc, ppc64, sh4, sparc64]
+        CONTAINER_ARCH: [alpha, hppa, m68k, ppc, ppc64, sh4, sparc64]
         include:
           - {ARCH: alpha,   QEMU_ARCH: alpha,       UNAME_ARCH: alpha,   CONTAINER_ARCH: alpha}
           - {ARCH: hppa,    QEMU_ARCH: hppa,        UNAME_ARCH: hppa,    CONTAINER_ARCH: hppa}
-          - {ARCH: loong64, QEMU_ARCH: loongarch64, UNAME_ARCH: loong64, CONTAINER_ARCH: loong64}
           - {ARCH: m68k,    QEMU_ARCH: m68k,        UNAME_ARCH: m68k,    CONTAINER_ARCH: m68k}
           - {ARCH: powerpc, QEMU_ARCH: ppc,         UNAME_ARCH: ppc,     CONTAINER_ARCH: ppc}
           - {ARCH: ppc64,   QEMU_ARCH: ppc64,       UNAME_ARCH: ppc64,   CONTAINER_ARCH: ppc64}
           - {ARCH: sh4,     QEMU_ARCH: sh4,         UNAME_ARCH: sh4,     CONTAINER_ARCH: sh4}
           - {ARCH: sparc64, QEMU_ARCH: sparc64,     UNAME_ARCH: sparc64, CONTAINER_ARCH: sparc64}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build
         run: |
-          sudo rm /var/lib/man-db/auto-update;
+          sudo rm -f /var/lib/man-db/auto-update;
           echo "man-db man-db/auto-update boolean false" | sudo debconf-set-selections;
           sudo apt purge -y needrestart snapd firefox;
           sudo apt-mark hold snapd;
           sudo apt update;
           sudo bash -c "apt install -y $HOST_PACKAGES || true";
-          dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }};
+          dpkg -L qemu-user | grep ${{ matrix.QEMU_ARCH }};
           ls -alh /proc/sys/fs/binfmt_misc/*;
           ./update.sh \
           -a ${{ matrix.ARCH }} \
@@ -57,10 +57,11 @@ jobs:
           -v ${BOOTSTRAP_VERSION} \
           -s ${PORTS_SUITE} \
           -z ${OS} \
+          -l ${LEGACY_REPO} \
           -m ${MIRROR};
       - name: Login to Docker Hub
         if: github.ref == 'refs/heads/main'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -68,36 +69,38 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           docker push -a ${DOCKER_REPO}
+          docker push -a ${LEGACY_REPO}
 
   build-supported:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     env:
       MIRROR: 'https://deb.debian.org/debian/'
     strategy:
       fail-fast: false
       matrix:
-        CONTAINER_ARCH: [amd64, arm32v5, arm32v7, arm64v8, i386, mips64le, ppc64le, riscv64, s390x]
+        CONTAINER_ARCH: [amd64, arm32v5, arm32v7, arm64v8, i386, loong64, mips64le, ppc64le, riscv64, s390x]
         include:
         - {ARCH: amd64,   QEMU_ARCH: x86_64,    UNAME_ARCH: x86_64,  CONTAINER_ARCH: amd64}
-        - {ARCH: armel,   QEMU_ARCH: arm,       UNAME_ARCH: armv7l,  CONTAINER_ARCH: arm32v5}
+        - {ARCH: armel,   QEMU_ARCH: arm,       UNAME_ARCH: armv7l,  CONTAINER_ARCH: arm32v5, SUITE: trixie}
         - {ARCH: armhf,   QEMU_ARCH: arm,       UNAME_ARCH: armv7l,  CONTAINER_ARCH: arm32v7}
         - {ARCH: arm64,   QEMU_ARCH: aarch64,   UNAME_ARCH: aarch64, CONTAINER_ARCH: arm64v8}
         - {ARCH: i386,    QEMU_ARCH: i386,      UNAME_ARCH: i386,    CONTAINER_ARCH: i386}
-        - {ARCH: mips64el, QEMU_ARCH: mips64el, UNAME_ARCH: mips64,  CONTAINER_ARCH: mips64le}
+        - {ARCH: loong64, QEMU_ARCH: loongarch64, UNAME_ARCH: loong64, CONTAINER_ARCH: loong64, LEGACY: polyarch/debian-debootstrap-ports}
+        - {ARCH: mips64el, QEMU_ARCH: mips64el, UNAME_ARCH: mips64,  CONTAINER_ARCH: mips64le, SUITE: bookworm}
         - {ARCH: ppc64el, QEMU_ARCH: ppc64le,   UNAME_ARCH: ppc64le, CONTAINER_ARCH: ppc64le}
         - {ARCH: riscv64, QEMU_ARCH: riscv64,   UNAME_ARCH: riscv64, CONTAINER_ARCH: riscv64}
         - {ARCH: s390x,   QEMU_ARCH: s390x,     UNAME_ARCH: s390x,   CONTAINER_ARCH: s390x}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build
         run: |
-          sudo rm /var/lib/man-db/auto-update;
+          sudo rm -f /var/lib/man-db/auto-update;
           echo "man-db man-db/auto-update boolean false" | sudo debconf-set-selections;
           sudo apt purge -y needrestart snapd firefox;
           sudo apt-mark hold snapd;
           sudo apt update;
           sudo bash -c "apt install -y $HOST_PACKAGES || true";
-          dpkg -L qemu-user-static | grep ${{ matrix.QEMU_ARCH }};
+          dpkg -L qemu-user | grep ${{ matrix.QEMU_ARCH }};
           ls -alh /proc/sys/fs/binfmt_misc/*;
           ./update.sh \
           -a ${{ matrix.ARCH }} \
@@ -107,12 +110,13 @@ jobs:
           -u ${QEMU_VER} \
           -d ${DOCKER_REPO} \
           -v ${BOOTSTRAP_VERSION} \
-          -s ${SUPPORTED_SUITE} \
+          -s ${{ matrix.SUITE || env.SUPPORTED_SUITE }} \
           -z ${OS} \
+          -l "${{ matrix.LEGACY }}" \
           -m ${MIRROR};
       - name: Login to Docker Hub
         if: github.ref == 'refs/heads/main'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -120,17 +124,19 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           docker push -a ${DOCKER_REPO}
+          [ -z "${{ matrix.LEGACY }}" ] || docker push -a ${{ matrix.LEGACY }}
 
   docker-combine:
+    if: github.ref == 'refs/heads/main'
     needs: [build-supported, build-ports]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Login to Docker Hub
         if: github.ref == 'refs/heads/main'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -139,14 +145,14 @@ jobs:
            docker manifest create ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION} \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-alpha \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-amd64 \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-arm32v5 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-arm32v5-trixie \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-arm32v7 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-arm64v8 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-hppa \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-i386 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-loong64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-m68k \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-mips64le \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-mips64le-bookworm \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-ppc64le \
@@ -162,14 +168,14 @@ jobs:
            docker manifest create ${DOCKER_REG}${DOCKER_REPO}:latest \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-alpha \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-amd64 \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-arm32v5 \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-arm32v5-trixie \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-arm32v7 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-arm64v8 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-hppa \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-i386 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-loong64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-m68k \
-                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-mips64le \
+                  --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-mips64le-bookworm \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-ppc \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-ppc64 \
                   --amend ${DOCKER_REG}${DOCKER_REPO}:latest-${OS}-ppc64le \
@@ -191,7 +197,7 @@ jobs:
 
   docker-uname:
     needs: [docker-combine]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -199,26 +205,22 @@ jobs:
                     loong64, m68k, mips64le, ppc, ppc64, ppc64le, riscv64,
                     s390x, sh4, sparc64]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Login to Docker Hub
         if: github.ref == 'refs/heads/main'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: uname
         run: |
-            sudo rm /var/lib/man-db/auto-update;
+            sudo rm -f /var/lib/man-db/auto-update;
             echo "man-db man-db/auto-update boolean false" | sudo debconf-set-selections;
             sudo apt purge -y needrestart snapd firefox;
             sudo apt-mark hold snapd;
             sudo apt update;
             ls -alh /proc/sys/fs/binfmt_misc/*;
-            sudo apt install -y wget;
-            wget -c http://de.archive.ubuntu.com/ubuntu/pool/universe/q/qemu/qemu-user-static_9.0.2+ds-4ubuntu5_amd64.deb
-            wget -c http://de.archive.ubuntu.com/ubuntu/pool/universe/b/binfmt-support/binfmt-support_2.2.2-7_amd64.deb
-            sudo dpkg -i binfmt-support_*_amd64.deb 
-            sudo dpkg -i qemu-user-static*_amd64.deb
+            sudo apt install -y qemu-user-binfmt;
             ls -alh /proc/sys/fs/binfmt_misc/*;
             docker run --platform linux/${{ matrix.QEMU_ARCH }} --rm -t \
             polyarch/debian-ports:latest uname -a
