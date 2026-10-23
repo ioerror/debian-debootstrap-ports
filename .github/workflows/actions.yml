@@ -4,6 +4,7 @@ on:
     paths:
       - 'update.sh'
       - '.github/workflows/actions.yml'
+      - 'qemu-*.sha256'
   workflow_dispatch:
 
 env:
@@ -68,6 +69,7 @@ jobs:
       - name: Publish Docker images
         if: github.ref == 'refs/heads/main'
         run: |
+          test "$(curl -s -o /dev/null -w '%{http_code}' https://hub.docker.com/v2/repositories/${DOCKER_REPO}/tags/${BOOTSTRAP_VERSION})" = 404
           docker push -a ${DOCKER_REPO}
           docker push -a ${LEGACY_REPO}
 
@@ -123,6 +125,7 @@ jobs:
       - name: Publish Docker images
         if: github.ref == 'refs/heads/main'
         run: |
+          test "$(curl -s -o /dev/null -w '%{http_code}' https://hub.docker.com/v2/repositories/${DOCKER_REPO}/tags/${BOOTSTRAP_VERSION})" = 404
           docker push -a ${DOCKER_REPO}
           [ -z "${{ matrix.LEGACY }}" ] || docker push -a ${{ matrix.LEGACY }}
 

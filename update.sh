@@ -107,7 +107,7 @@ EOF
   docker buildx build --provenance false --platform $CONTAINER_PLATFORM -t "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}${SFX}" "${dir}/full"
   docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}${SFX}" "${DOCKER_REPO}:latest-${OS}-${CONTAINER_ARCH}${SFX}"
   docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}${SFX}" "${DOCKER_REPO}:latest-${OS}-${ARCH}${SFX}" || true
-  [ -z "$LEGACY_REPO" ] || docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}" "${LEGACY_REPO}:${ARCH}-trixie-sid"
+  [ -z "$LEGACY_REPO" ] || docker image tag "${DOCKER_REPO}:${BOOTSTRAP_VERSION}-${OS}-${CONTAINER_ARCH}${SFX}" "${LEGACY_REPO}:${ARCH}-trixie-sid"
   docker rmi "${DOCKER_REPO}:slim"
 fi
 echo "END"
